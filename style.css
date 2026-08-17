@@ -96,7 +96,7 @@ p.subtitle {
 }
 
 .card-img-opcion img {
-    width: 200%;
+    width: 300%;
     height: 320px;          /* Mantiene el tamaño que te gustó */
     object-fit: cover;      /* Llena todo el espacio del cuadro sin dejar espacios blancos */
     object-position: center; /* Centra la imagen perfectamente dentro del cuadro */
