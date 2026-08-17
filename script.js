@@ -11,7 +11,6 @@ function seleccionarModulo(tipo) {
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
     }
     
-    // Limpiar campos
     document.getElementById('alto').value = '';
     document.getElementById('largo').value = '';
     document.getElementById('area').value = '';
@@ -51,17 +50,33 @@ function generarResultados() {
     let htmlTabla = '';
 
     if (tipoActual === 'pared') {
-        // Resultados para Paredes (según tu imagen anterior)
-        const cantLaminas = Math.ceil((area * 2) / 2.88); 
-        const cantRiel = Math.ceil((largo * 2) / 3.05);  
-        const cantParal = Math.ceil((largo / 0.60) + 1); 
+        // Fórmulas exactas indicadas para Paredes
+        const rendimientoLamina = 2.976; 
+        const largoParal = 3.0;
+        const largoRiel = 3.0;
+
+        // Distancia entre parales según altura (> 3m usa 0.41m, sino 0.61m)
+        const distanciaParales = alto > 3 ? 0.41 : 0.61;
+
+        // Cálculo base de parales por tu fórmula: (Largo / distancia) * (Alto / largoParal) + 2 de punta
+        const paralesBase = (largo / distanciaParales) * (alto / largoParal);
+        const cantParal = Math.ceil(paralesBase + 2);
+
+        // Rieles: (Largo * 2) / largo del riel
+        const cantRiel = Math.ceil((largo * 2) / largoRiel);
+
+        // Láminas base (una sola cara)
+        const laminasBase = Math.ceil(area / rendimientoLamina);
+        const cantLaminasSimple = laminasBase;
+        const cantLaminasDobleCara = laminasBase * 2;
 
         htmlTabla = `
+            <tr><td colspan="4" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020002</td>
                 <td style="text-align: left;">LÁMINA DE YESO 1/2" 1,22 X 2,4</td>
-                <td><strong>${cantLaminas}</strong></td>
+                <td><strong>${cantLaminasSimple}</strong></td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -72,16 +87,31 @@ function generarResultados() {
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020108</td>
-                <td style="text-align: left;">PARAL 2 1/2" X 3.05M ACERO GAL</td>
+                <td style="text-align: left;">PARAL 2 1/2" X 3.05M ACERO GAL (Separación: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
+            </tr>
+
+            <tr><td colspan="4" style="background-color: #cbd5e1; font-weight: bold; color: #1a4472;">CÁLCULO POR AMBOS LADOS (Doble cara)</td></tr>
+            <tr>
+                <td><strong>Laminas (Doble Cara)</strong></td>
+                <td>3020002</td>
+                <td style="text-align: left;">LÁMINA DE YESO 1/2" 1,22 X 2,4</td>
+                <td><strong>${cantLaminasDobleCara}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Riel / Paral</strong></td>
+                <td>-</td>
+                <td style="text-align: left;">Estructura metálica (Mismas cantidades de perfilería)</td>
+                <td><strong>Igual</strong></td>
             </tr>
         `;
     } else {
-        // Resultados para Cielo Raso (con Láminas de 3/8", Rieles, Parales y Omegas según tu nueva imagen)
-        const cantLaminasCielo = Math.ceil(area / 2.88);
+        // Cálculo por defecto para Cielo Raso (con omegas)
+        const areaCubrir = area;
+        const cantLaminasCielo = Math.ceil(areaCubrir / 2.976);
         const cantRielCielo = Math.ceil((largo * 2) / 3.05);
-        const cantParalCielo = Math.ceil((largo / 0.60) + 1);
-        const cantOmega = Math.ceil((area / 0.5) / 3.05); // Cálculo estimado basado en separación de omegas
+        const cantParalCielo = Math.ceil((largo / 0.61) + 1);
+        const cantOmega = Math.ceil((areaCubrir / 0.5) / 3.05);
 
         htmlTabla = `
             <tr>
