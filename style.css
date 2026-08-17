@@ -96,7 +96,7 @@ p.subtitle {
 
 .card-img-opcion img {
     width: 100%;
-    height: 200px;          /* Un poco más grande para mayor impacto */
+    height: 300px;          /* Un poco más grande para mayor impacto */
     object-fit: cover;      /* Ocupa todo el recuadro */
     object-position: center;
     display: block;
