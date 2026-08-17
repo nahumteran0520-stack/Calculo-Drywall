@@ -200,4 +200,41 @@ th {
     .menu-grid {
         grid-template-columns: 1fr;
     }
+    /* Estilo para el grid de botones con imágenes */
+.menu-grid-img {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.card-img-opcion {
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-img-opcion img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+}
+
+.card-img-opcion:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.25);
+}
+
+/* Adaptabilidad para celulares */
+@media (max-width: 480px) {
+    .menu-grid-img {
+        grid-template-columns: 1fr;
+    }
+}
 }
