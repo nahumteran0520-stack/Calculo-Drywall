@@ -1,0 +1,143 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.app-header {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.app-header p {
+    font-size: 0.95rem;
+    color: #bdc3c7;
+    margin-top: 0.3rem;
+}
+
+.app-container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.control-panel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.panel-block h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: #34495e;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 0.5rem;
+}
+
+.option-btn {
+    padding: 0.6rem;
+    border: 2px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.option-btn:hover {
+    border-color: #3498db;
+}
+
+.option-btn.active {
+    border-color: #2980b9;
+    background-color: #ebf5fb;
+    font-weight: 600;
+}
+
+.preview-panel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview-panel h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #34495e;
+}
+
+.simulation-stage {
+    width: 100%;
+    height: 350px;
+    border: 4px solid #333;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+
+.wall-layer {
+    flex: 2;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.accent-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.floor-layer {
+    flex: 1;
+    border-top: 3px solid rgba(0,0,0,0.2);
+    transform: perspective(300px) rotateX(20deg);
+    transform-origin: top center;
+    transition: background-color 0.3s ease;
+}
+
+.selection-summary {
+    margin-top: 1.2rem;
+    font-size: 0.95rem;
+    color: #555;
+    text-align: center;
+}
