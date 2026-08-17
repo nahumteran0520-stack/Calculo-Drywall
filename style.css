@@ -2,41 +2,54 @@
     --epa-amarillo: #ffcc00;
     --epa-azul: #003366;
     --epa-azul-oscuro: #001f3f;
-    --epa-gris-fondo: #f4f6f8;
+    --epa-fondo: #f4f6f8;
     --epa-texto: #333333;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--epa-gris-fondo);
+    background-color: var(--epa-fondo);
     color: var(--epa-texto);
     margin: 0;
     padding: 0;
 }
 
+/* Encabezado EPA */
 header {
-    background-color: var(--epa-azul);
-    color: white;
+    background-color: var(--epa-amarillo);
+    color: var(--epa-azul);
+    padding: 20px 15px;
     text-align: center;
-    padding: 20px 0;
-    border-bottom: 6px solid var(--epa-amarillo);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-bottom: 5px solid var(--epa-azul);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.logo-epa {
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 header h1 {
-    margin: 0;
     font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    margin: 5px 0 0 0;
+    font-weight: 800;
+    text-transform: uppercase;
 }
 
-.container {
-    max-width: 600px;
-    margin: 30px auto;
+/* Contenedor Principal */
+.main-container {
+    max-width: 550px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+.card {
     background: white;
     padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
 }
 
 .hidden {
@@ -46,36 +59,54 @@ header h1 {
 h2 {
     color: var(--epa-azul);
     text-align: center;
-    margin-bottom: 20px;
+    margin-top: 0;
     font-size: 20px;
 }
 
-.menu-opciones {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+p.subtitle {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 20px;
 }
 
-.btn-opcion {
-    background-color: white;
+/* Tarjetas de Menú dinámicas */
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.card-opcion {
+    background: white;
     color: var(--epa-azul);
     border: 2px solid var(--epa-azul);
-    padding: 15px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 6px;
+    border-radius: 10px;
+    padding: 25px 15px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     transition: all 0.3s ease;
-    text-align: center;
 }
 
-.btn-opcion:hover {
+.card-opcion .icon {
+    font-size: 32px;
+}
+
+.card-opcion:hover {
     background-color: var(--epa-azul);
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,51,102,0.2);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,51,102,0.2);
 }
 
+/* Formulario */
 .form-group {
     margin-bottom: 15px;
 }
@@ -85,6 +116,7 @@ label {
     font-weight: 600;
     margin-bottom: 5px;
     color: var(--epa-azul-oscuro);
+    font-size: 14px;
 }
 
 input {
@@ -104,6 +136,7 @@ input:focus {
     box-shadow: 0 0 0 3px rgba(0,51,102,0.1);
 }
 
+/* Botones de acción */
 .btn-calcular {
     background-color: var(--epa-amarillo);
     color: var(--epa-azul-oscuro);
@@ -111,11 +144,10 @@ input:focus {
     padding: 14px;
     width: 100%;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 800;
     border-radius: 6px;
     cursor: pointer;
     transition: background 0.3s ease;
-    margin-top: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -123,28 +155,32 @@ input:focus {
     background-color: #e6b800;
 }
 
-.btn-volver, .btn-nuevo {
+.btn-volver {
     background-color: #64748b;
     color: white;
     border: none;
-    padding: 12px;
-    width: 100%;
-    font-size: 15px;
+    padding: 8px 12px;
+    font-size: 13px;
     font-weight: bold;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
-    margin-top: 15px;
+    margin-bottom: 15px;
     transition: background 0.3s ease;
 }
 
-.btn-volver:hover, .btn-nuevo:hover {
+.btn-volver:hover {
     background-color: #475569;
+}
+
+/* Tablas de Resultados */
+.table-responsive {
+    overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 14px;
 }
 
@@ -157,4 +193,11 @@ th, td {
 th {
     background-color: var(--epa-azul);
     color: white;
+}
+
+/* Adaptabilidad móvil */
+@media (max-width: 480px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
 }
