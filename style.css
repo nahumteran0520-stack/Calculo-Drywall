@@ -70,40 +70,41 @@ p.subtitle {
     margin-bottom: 20px;
 }
 
-/* Tarjetas de Menú dinámicas */
-.menu-grid {
+/* Estilo para el grid de botones con imágenes */
+.menu-grid-img {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     margin-top: 15px;
 }
 
-.card-opcion {
-    background: white;
-    color: var(--epa-azul);
-    border: 2px solid var(--epa-azul);
-    border-radius: 10px;
-    padding: 25px 15px;
+.card-img-opcion {
+    background: transparent;
+    border: 2px solid #e2e8f0;
+    padding: 0;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     display: flex;
-    flex-direction: column;
-    align-items: center;
     justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
+    align-items: center;
+    background-color: #fff;
 }
 
-.card-opcion .icon {
-    font-size: 32px;
+.card-img-opcion img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    display: block;
+    border-radius: 10px;
 }
 
-.card-opcion:hover {
-    background-color: var(--epa-azul);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,51,102,0.2);
+.card-img-opcion:hover {
+    transform: translateY(-4px);
+    border-color: var(--epa-azul);
+    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.2);
 }
 
 /* Formulario */
@@ -197,86 +198,7 @@ th {
 
 /* Adaptabilidad móvil */
 @media (max-width: 480px) {
-    .menu-grid {
-        grid-template-columns: 1fr;
-    }
-    /* Estilo para el grid de botones con imágenes */
-.menu-grid-img {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.card-img-opcion {
-    background: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card-img-opcion img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 12px;
-}
-
-.card-img-opcion:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.25);
-}
-
-/* Adaptabilidad para celulares */
-@media (max-width: 480px) {
     .menu-grid-img {
         grid-template-columns: 1fr;
     }
-}/* Estilo ajustado para el grid de botones con imágenes */
-.menu-grid-img {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.card-img-opcion {
-    background: transparent;
-    border: 2px solid #e2e8f0;
-    padding: 0;
-    cursor: pointer;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fff;
-}
-
-.card-img-opcion img {
-    width: 100%;
-    height: 140px; /* Controla la altura exacta de los botones */
-    object-fit: cover; /* Hace que la foto se recorte bien sin deformarse */
-    display: block;
-    border-radius: 10px;
-}
-
-.card-img-opcion:hover {
-    transform: translateY(-4px);
-    border-color: #003366;
-    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.2);
-}
-
-/* Adaptabilidad para celulares */
-@media (max-width: 480px) {
-    .menu-grid-img {
-        grid-template-columns: 1fr;
-    }
-}
 }
