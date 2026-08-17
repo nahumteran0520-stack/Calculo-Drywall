@@ -3,30 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Materiales - Drywall </title>
+    <title>Calculadora de Materiales - Drywall</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <!-- Encabezado Corporativo -->
     <header>
-        <div class="logo-epa">Ferretería</div>
-        <h1>Calculadora de Materiales Drywall</h1>
+        <div class="logo-epa">Calculadora de Materiales</div>
+        <h1>Drywall</h1>
     </header>
+
     <div class="main-container">
         <!-- Selector Inicial de Categoría -->
-<div id="seccion-menu" class="card">
-    <h2>Selecciona el tipo de proyecto</h2>
-    <p class="subtitle">Elige una categoría para iniciar tu presupuesto:</p>
-    <div class="menu-grid-img">
-        <button class="card-img-opcion" onclick="seleccionarModulo('pared')">
-            <img src="pared.jfif" alt="Paredes con Drywall">
-        </button>
-        <button class="card-img-opcion" onclick="seleccionarModulo('cielo')">
-            <img src="cielo.jfif" alt="Cielo Raso Drywall">
-        </button>
-    </div>
-</div>
+        <div id="seccion-menu" class="card">
+            <h2>Selecciona el tipo de proyecto</h2>
+            <p class="subtitle">Elige una categoría para iniciar tu presupuesto:</p>
+            <div class="menu-grid-img">
+                <button class="card-img-opcion" onclick="seleccionarModulo('pared')">
+                    <img src="pared.jpg" alt="Paredes con Drywall">
+                </button>
+                <button class="card-img-opcion" onclick="seleccionarModulo('cielo')">
+                    <img src="cielo.jpg" alt="Cielo Raso Drywall">
+                </button>
+            </div>
+        </div>
 
         <!-- Formulario de Cálculo (Oculto al inicio) -->
         <div id="seccion-calculo" class="card hidden">
@@ -35,16 +36,16 @@
 
             <div class="form-group">
                 <label for="alto">Alto</label>
-                <input type="number" id="alto" step="0.01" placeholder="Ej. 2.5" oninput="calcularArea()">
+                <input type="number" id="alto" step="0.01" placeholder="Ej. 2" oninput="calcularArea()">
             </div>
 
             <div class="form-group">
                 <label for="largo">Largo</label>
-                <input type="number" id="largo" step="0.01" placeholder="Ej. 4" oninput="calcularArea()">
+                <input type="number" id="largo" step="0.01" placeholder="Ej. 2" oninput="calcularArea()">
             </div>
 
             <div class="form-group">
-                <label for="area">Área a Cubrir (m²)</label>
+                <label for="area">Area a Cubrir</label>
                 <input type="number" id="area" readonly placeholder="0">
             </div>
 
@@ -59,8 +60,8 @@
                     <thead>
                         <tr>
                             <th>Artículo</th>
-                            <th>Código</th>
-                            <th>Descripción</th>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
                             <th>Cantidad</th>
                         </tr>
                     </thead>
