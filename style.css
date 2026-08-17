@@ -96,8 +96,8 @@ p.subtitle {
 }
 
 .card-img-opcion img {
-    width: 140%;
-    height: 200px;
+    width: 160%;
+    height: 250px;
     object-fit: contain;
     background-color: #ffffff;
     display: block;
