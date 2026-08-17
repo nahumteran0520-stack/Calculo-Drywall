@@ -3,49 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Materiales para Drywall</title>
+    <title>Calculadora de Materiales - Drywall</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Calculadora de Drywall</h1>
-        <p>Calcula los materiales necesarios para paredes y cielo raso</p>
-    </header>
 
-    <main class="container">
-        <!-- Formulario de Entrada -->
-        <section class="card">
-            <h2>Parámetros del Proyecto</h2>
-            
-            <div class="form-group">
-                <label for="tipoProyecto">Tipo de Estructura:</label>
-                <select id="tipoProyecto">
-                    <option value="pared">Pared / Tabique (Doble Cara)</option>
-                    <option value="cielo">Cielo Raso / Cielorraso</option>
-                </select>
+    <div class="main-container">
+        <!-- Selector Inicial de Categoría -->
+        <div id="seccion-menu" class="card">
+            <h1>Calculadora de Materiales Drywall</h1>
+            <p>Selecciona el tipo de proyecto que deseas calcular:</p>
+            <div class="menu-buttons">
+                <button class="btn-opcion" onclick="seleccionarModulo('pared')">Paredes con Drywall</button>
+                <button class="btn-opcion" onclick="seleccionarModulo('cielo')">Cielo Raso Drywall</button>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="largo">Largo del área (metros):</label>
-                <input type="number" id="largo" step="0.01" placeholder="Ej. 5">
-            </div>
+        <!-- Formulario de Cálculo (Oculto al inicio) -->
+        <div id="seccion-calculo" class="card hidden">
+            <button class="btn-volver" onclick="volverMenu()">⬅ Volver al menú</button>
+            <h2 id="titulo-modulo">Calculadora</h2>
 
             <div class="form-group">
-                <label for="alto">Altura o Ancho del área (metros):</label>
-                <input type="number" id="alto" step="0.01" placeholder="Ej. 2.6">
+                <label for="alto">Alto</label>
+                <input type="number" id="alto" step="0.01" placeholder="Ej. 2" oninput="calcularArea()">
             </div>
 
-            <button id="btnCalcular">Calcular Materiales</button>
-        </section>
-
-        <!-- Resultados -->
-        <section class="card results-card" id="resultados">
-            <h2>Lista de Materiales Estimados</h2>
-            <div id="listaResultados">
-                <p class="placeholder-text">Ingresa las medidas y haz clic en calcular para ver los resultados.</p>
+            <div class="form-group">
+                <label for="largo">Largo</label>
+                <input type="number" id="largo" step="0.01" placeholder="Ej. 2" oninput="calcularArea()">
             </div>
-        </section>
-    </main>
+
+            <div class="form-group">
+                <label for="area">Area a Cubrir</label>
+                <input type="number" id="area" readonly placeholder="0">
+            </div>
+
+            <button class="btn-calcular" onclick="generarResultados()">CALCULAR</button>
+        </div>
+
+        <!-- Tabla de Resultados (Oculto al inicio) -->
+        <div id="seccion-resultados" class="card hidden">
+            <h2>Resultados de Materiales</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Artículo</th>
+                            <th>Codigo</th>
+                            <th>Descripcion</th>
+                            <th>Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cuerpo">
+                        <!-- Los resultados se cargan aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
