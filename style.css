@@ -96,7 +96,7 @@ p.subtitle {
 }
 
 .card-img-opcion img {
-    width: 180%;
+    width: 240%;
     height: 300px;
     object-fit: contain;
     background-color: #ffffff;
