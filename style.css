@@ -1,7 +1,7 @@
-:root {
+::root {
     --epa-amarillo: #ffcc00;
-    --epa-azul: #003366;
-    --epa-azul-oscuro: #001f3f;
+    --epa-azul: #002D72;       /* Azul corporativo exacto de la muestra */
+    --epa-azul-oscuro: #001a40; /* Tono profundo para contrastes */
     --epa-fondo: #f4f6f8;
     --epa-texto: #333333;
 }
