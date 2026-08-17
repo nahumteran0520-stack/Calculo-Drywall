@@ -197,4 +197,12 @@ th {
     .menu-grid-img {
         grid-template-columns: 1fr;
     }
+    /* Ajuste exclusivo para Celulares y pantallas pequeñas */
+@media (max-width: 480px) {
+    .card-img-opcion img {
+        height: 180px;          /* Una altura más cómoda para pantallas de celular */
+        object-fit: contain;    /* Muestra la imagen completa sin recortar nada en móvil */
+        object-position: center;
+    }
+}
 }
