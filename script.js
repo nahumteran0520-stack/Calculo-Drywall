@@ -1,56 +1,117 @@
-document.getElementById('btnCalcular').addEventListener('click', function() {
-    const tipo = document.getElementById('tipoProyecto').value;
-    const largo = parseFloat(document.getElementById('largo').value);
-    const alto = parseFloat(document.getElementById('alto').value);
-    const contenedorResultados = document.getElementById('listaResultados');
+let tipoActual = '';
 
-    // Validaciones básicas
-    if (!largo || !alto || largo <= 0 || alto <= 0) {
-        alert('Por favor, ingresa valores válidos mayores a cero.');
+function seleccionarModulo(tipo) {
+    tipoActual = tipo;
+    document.getElementById('seccion-menu').classList.add('hidden');
+    document.getElementById('seccion-calculo').classList.remove('hidden');
+    
+    if (tipo === 'pared') {
+        document.getElementById('titulo-modulo').innerText = 'Paredes con Drywall';
+    } else {
+        document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
+    }
+    
+    // Limpiar campos
+    document.getElementById('alto').value = '';
+    document.getElementById('largo').value = '';
+    document.getElementById('area').value = '';
+}
+
+function volverMenu() {
+    document.getElementById('seccion-calculo').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-menu').classList.remove('hidden');
+}
+
+function nuevoCalculo() {
+    document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-calculo').classList.remove('hidden');
+    document.getElementById('alto').value = '';
+    document.getElementById('largo').value = '';
+    document.getElementById('area').value = '';
+}
+
+function calcularArea() {
+    const alto = parseFloat(document.getElementById('alto').value) || 0;
+    const largo = parseFloat(document.getElementById('largo').value) || 0;
+    const area = alto * largo;
+    document.getElementById('area').value = area > 0 ? area.toFixed(2) : '';
+}
+
+function generarResultados() {
+    const alto = parseFloat(document.getElementById('alto').value);
+    const largo = parseFloat(document.getElementById('largo').value);
+
+    if (!alto || !largo || alto <= 0 || largo <= 0) {
+        alert('Por favor, ingresa valores válidos para el alto y el largo.');
         return;
     }
 
-    const areaTotal = largo * alto;
-    let htmlResultados = `<p><strong>Área total:</strong> ${areaTotal.toFixed(2)} m²</p><br>`;
+    const area = alto * largo;
+    let htmlTabla = '';
 
-    if (tipo === 'pared') {
-        // Fórmulas estimadas estándar para tabique / pared de drywall (considerando ambas caras)
-        const factorPlacas = (areaTotal * 2) / 2.88; // Placa estándar de 1.22 x 2.44m = 2.97m² (aprox 2.88 útiles) con 10% desperdicio
-        const parales = Math.ceil((largo / 0.60) + 1); // cada 60 cm + inicial
-        const rieles = Math.ceil((largo * 2) / 3); // Soleras superior e inferior (tiras de 3m)
-        const tornillosT2 = Math.ceil(areaTotal * 20); // Aprox 20 por m²
-        const tornillosFijacion = Math.ceil(areaTotal * 8);
-        const masillaKg = (areaTotal * 0.8).toFixed(1);
-        const cintaMetros = Math.ceil(areaTotal * 1.5);
+    if (tipoActual === 'pared') {
+        // Resultados para Paredes (según tu imagen anterior)
+        const cantLaminas = Math.ceil((area * 2) / 2.88); 
+        const cantRiel = Math.ceil((largo * 2) / 3.05);  
+        const cantParal = Math.ceil((largo / 0.60) + 1); 
 
-        htmlResultados += `
-            <div class="material-item"><span class="material-name">Placas de Yeso (1/2"):</span><span class="material-qty">${Math.ceil(factorPlacas)} unids.</span></div>
-            <div class="material-item"><span class="material-name">Parales (Montantes):</span><span class="material-qty">${parales} unids.</span></div>
-            <div class="material-item"><span class="material-name">Rieles (Soleras):</span><span class="material-qty">${rieles} unids.</span></div>
-            <div class="material-item"><span class="material-name">Tornillos T2 (Fijación placa):</span><span class="material-qty">${tornillosT2} unids.</span></div>
-            <div class="material-item"><span class="material-name">Tornillos T1 (Estructura):</span><span class="material-qty">${tornillosFijacion} unids.</span></div>
-            <div class="material-item"><span class="material-name">Masilla para juntas:</span><span class="material-qty">${masillaKg} kg</span></div>
-            <div class="material-item"><span class="material-name">Cinta de papel:</span><span class="material-qty">${cintaMetros} mts</span></div>
+        htmlTabla = `
+            <tr>
+                <td><strong>Laminas</strong></td>
+                <td>3020002</td>
+                <td style="text-align: left;">LÁMINA DE YESO 1/2" 1,22 X 2,4</td>
+                <td><strong>${cantLaminas}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Riel</strong></td>
+                <td>3020106</td>
+                <td style="text-align: left;">RIEL 2 1/2" X 3,05M ACERO GALV</td>
+                <td><strong>${cantRiel}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Paral</strong></td>
+                <td>3020108</td>
+                <td style="text-align: left;">PARAL 2 1/2" X 3.05M ACERO GAL</td>
+                <td><strong>${cantParal}</strong></td>
+            </tr>
         `;
-
     } else {
-        // Fórmulas para Cielo Raso (Suspendido / Junta Invisible)
-        const factorPlacasCielo = areaTotal / 2.88;
-        const solerasCielo = Math.ceil((largo * alto) / 3); // Perfilería principal/perimetral aproximada
-        const fijacionesCielo = Math.ceil(areaTotal * 12);
-        const tornillosCielo = Math.ceil(areaTotal * 15);
-        const masillaCielo = (areaTotal * 0.5).toFixed(1);
-        const cintaCielo = Math.ceil(areaTotal * 1.2);
+        // Resultados para Cielo Raso (con Láminas de 3/8", Rieles, Parales y Omegas según tu nueva imagen)
+        const cantLaminasCielo = Math.ceil(area / 2.88);
+        const cantRielCielo = Math.ceil((largo * 2) / 3.05);
+        const cantParalCielo = Math.ceil((largo / 0.60) + 1);
+        const cantOmega = Math.ceil((area / 0.5) / 3.05); // Cálculo estimado basado en separación de omegas
 
-        htmlResultados += `
-            <div class="material-item"><span class="material-name">Placas de Yeso (Cielo Raso):</span><span class="material-qty">${Math.ceil(factorPlacasCielo)} unids.</span></div>
-            <div class="material-item"><span class="material-name">Perfiles / Soleras perimetrales:</span><span class="material-qty">${solerasCielo} unids.</span></div>
-            <div class="material-item"><span class="material-name">Tornillos T2:</span><span class="material-qty">${tornillosCielo} unids.</span></div>
-            <div class="material-item"><span class="material-name">Tarugos y Tornillos fijación:</span><span class="material-qty">${fijacionesCielo} unids.</span></div>
-            <div class="material-item"><span class="material-name">Masilla:</span><span class="material-qty">${masillaCielo} kg</span></div>
-            <div class="material-item"><span class="material-name">Cinta de papel:</span><span class="material-qty">${cintaCielo} mts</span></div>
+        htmlTabla = `
+            <tr>
+                <td><strong>Laminas</strong></td>
+                <td>3020001</td>
+                <td style="text-align: left;">LÁMINA DE YESO 3/8" 1,22M X 2</td>
+                <td><strong>${cantLaminasCielo}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Riel</strong></td>
+                <td>3020100</td>
+                <td style="text-align: left;">RIEL 1 5/8" X 3.05M ACERO GALV</td>
+                <td><strong>${cantRielCielo}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Paral</strong></td>
+                <td>3020101</td>
+                <td style="text-align: left;">PARAL 1 5/8" X 3.05M ACERO GAL</td>
+                <td><strong>${cantParalCielo}</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Omega</strong></td>
+                <td>3020102</td>
+                <td style="text-align: left;">PERFIL OMEGA 3,05M ACERO GALVA</td>
+                <td><strong>${cantOmega}</strong></td>
+            </tr>
         `;
     }
 
-    contenedorResultados.innerHTML = htmlResultados;
-});
+    document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
+    document.getElementById('seccion-calculo').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.remove('hidden');
+}
