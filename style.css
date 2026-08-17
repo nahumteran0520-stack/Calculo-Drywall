@@ -1,7 +1,7 @@
-::root {
-    --epa-amarillo: #ffcc00;
-    --epa-azul: #002D72;       /* Azul corporativo exacto de la muestra */
-    --epa-azul-oscuro: #001a40; /* Tono profundo para contrastes */
+:root {
+    --epa-amarillo: #FFCC00;
+    --epa-azul: #002D72;
+    --epa-azul-oscuro: #001a40;
     --epa-fondo: #f4f6f8;
     --epa-texto: #333333;
 }
@@ -14,7 +14,7 @@ body {
     padding: 0;
 }
 
-/* Encabezado EPA */
+/* Encabezado Corporativo con Fondo Amarillo y Texto Azul */
 header {
     background-color: var(--epa-amarillo);
     color: var(--epa-azul);
@@ -29,6 +29,7 @@ header {
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 1px;
+    color: var(--epa-azul);
 }
 
 header h1 {
@@ -36,6 +37,7 @@ header h1 {
     margin: 5px 0 0 0;
     font-weight: 800;
     text-transform: uppercase;
+    color: var(--epa-azul);
 }
 
 /* Contenedor Principal */
@@ -198,6 +200,10 @@ th {
 
 /* Adaptabilidad móvil */
 @media (max-width: 480px) {
+    .menu-grid-img {
+        grid-template-columns: 1fr;
+    }
+}
     .menu-grid-img {
         grid-template-columns: 1fr;
     }
