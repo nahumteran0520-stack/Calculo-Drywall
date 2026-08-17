@@ -38,7 +38,6 @@ function calcularArea() {
 }
 
 function generarResultados() {
-    // Nota: El campo "Alto" funciona en este contexto como el "Ancho" del área para el cielo raso o la altura de la pared.
     const alto = parseFloat(document.getElementById('alto').value);
     const largo = parseFloat(document.getElementById('largo').value);
 
@@ -101,22 +100,14 @@ function generarResultados() {
         `;
     } else {
         // Fórmulas exactas indicadas para Cielo Raso
-        // 'alto' actúa como el Ancho del área para esta fórmula
         const anchoArea = alto; 
         const largoArea = largo;
         const rendimientoLamina = 2.976;
         const largoPerfil = 3.0;
 
-        // Láminas: (Ancho * Largo) / 2.976 redondeado hacia arriba
         const cantLaminasCielo = Math.ceil(area / rendimientoLamina);
-
-        // Rieles: ((Ancho + Largo) / 3mt) * 2
         const cantRielCielo = Math.ceil(((anchoArea + largoArea) / largoPerfil) * 2);
-
-        // Parales: (Largo del área / 3mt) * (Ancho del área / 1.20cm) redondeado hacia arriba
         const cantParalCielo = Math.ceil((largoArea / largoPerfil) * (anchoArea / 1.20));
-
-        // Omega: (Ancho del área / 3mt) * (Largo del área / 0.40cm) redondeado hacia arriba
         const cantOmega = Math.ceil((anchoArea / largoPerfil) * (largoArea / 0.40));
 
         htmlTabla = `
@@ -151,7 +142,4 @@ function generarResultados() {
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
-    document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
-    document.getElementById('seccion-calculo').classList.add('hidden');
-    document.getElementById('seccion-resultados').classList.remove('hidden');
-}
+
