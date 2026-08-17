@@ -1,5 +1,5 @@
 :root {
-    --epa-amarillo: #FFCC00;
+    --epa-amarillo: #FFDE21;
     --epa-azul: #0833a2;
     --epa-azul-oscuro: #001a40;
     --epa-fondo: #f4f6f8;
@@ -96,8 +96,8 @@ p.subtitle {
 }
 
 .card-img-opcion img {
-    width: 100%;
-    height: 240px;
+    width: 180%;
+    height: 300px;
     object-fit: contain;
     background-color: #ffffff;
     display: block;
