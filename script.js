@@ -1,143 +1,56 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+document.getElementById('btnCalcular').addEventListener('click', function() {
+    const tipo = document.getElementById('tipoProyecto').value;
+    const largo = parseFloat(document.getElementById('largo').value);
+    const alto = parseFloat(document.getElementById('alto').value);
+    const contenedorResultados = document.getElementById('listaResultados');
 
-body {
-    background-color: #f4f7f6;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-.app-header {
-    background-color: #2c3e50;
-    color: white;
-    text-align: center;
-    padding: 1.5rem;
-}
-
-.app-header p {
-    font-size: 0.95rem;
-    color: #bdc3c7;
-    margin-top: 0.3rem;
-}
-
-.app-container {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 2rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-    flex: 1;
-}
-
-@media (max-width: 768px) {
-    .app-container {
-        grid-template-columns: 1fr;
+    // Validaciones básicas
+    if (!largo || !alto || largo <= 0 || alto <= 0) {
+        alert('Por favor, ingresa valores válidos mayores a cero.');
+        return;
     }
-}
 
-.control-panel {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
+    const areaTotal = largo * alto;
+    let htmlResultados = `<p><strong>Área total:</strong> ${areaTotal.toFixed(2)} m²</p><br>`;
 
-.panel-block h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.8rem;
-    color: #34495e;
-}
+    if (tipo === 'pared') {
+        // Fórmulas estimadas estándar para tabique / pared de drywall (considerando ambas caras)
+        const factorPlacas = (areaTotal * 2) / 2.88; // Placa estándar de 1.22 x 2.44m = 2.97m² (aprox 2.88 útiles) con 10% desperdicio
+        const parales = Math.ceil((largo / 0.60) + 1); // cada 60 cm + inicial
+        const rieles = Math.ceil((largo * 2) / 3); // Soleras superior e inferior (tiras de 3m)
+        const tornillosT2 = Math.ceil(areaTotal * 20); // Aprox 20 por m²
+        const tornillosFijacion = Math.ceil(areaTotal * 8);
+        const masillaKg = (areaTotal * 0.8).toFixed(1);
+        const cintaMetros = Math.ceil(areaTotal * 1.5);
 
-.options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 0.5rem;
-}
+        htmlResultados += `
+            <div class="material-item"><span class="material-name">Placas de Yeso (1/2"):</span><span class="material-qty">${Math.ceil(factorPlacas)} unids.</span></div>
+            <div class="material-item"><span class="material-name">Parales (Montantes):</span><span class="material-qty">${parales} unids.</span></div>
+            <div class="material-item"><span class="material-name">Rieles (Soleras):</span><span class="material-qty">${rieles} unids.</span></div>
+            <div class="material-item"><span class="material-name">Tornillos T2 (Fijación placa):</span><span class="material-qty">${tornillosT2} unids.</span></div>
+            <div class="material-item"><span class="material-name">Tornillos T1 (Estructura):</span><span class="material-qty">${tornillosFijacion} unids.</span></div>
+            <div class="material-item"><span class="material-name">Masilla para juntas:</span><span class="material-qty">${masillaKg} kg</span></div>
+            <div class="material-item"><span class="material-name">Cinta de papel:</span><span class="material-qty">${cintaMetros} mts</span></div>
+        `;
 
-.option-btn {
-    padding: 0.6rem;
-    border: 2px solid #ddd;
-    background: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.2s ease;
-}
+    } else {
+        // Fórmulas para Cielo Raso (Suspendido / Junta Invisible)
+        const factorPlacasCielo = areaTotal / 2.88;
+        const solerasCielo = Math.ceil((largo * alto) / 3); // Perfilería principal/perimetral aproximada
+        const fijacionesCielo = Math.ceil(areaTotal * 12);
+        const tornillosCielo = Math.ceil(areaTotal * 15);
+        const masillaCielo = (areaTotal * 0.5).toFixed(1);
+        const cintaCielo = Math.ceil(areaTotal * 1.2);
 
-.option-btn:hover {
-    border-color: #3498db;
-}
+        htmlResultados += `
+            <div class="material-item"><span class="material-name">Placas de Yeso (Cielo Raso):</span><span class="material-qty">${Math.ceil(factorPlacasCielo)} unids.</span></div>
+            <div class="material-item"><span class="material-name">Perfiles / Soleras perimetrales:</span><span class="material-qty">${solerasCielo} unids.</span></div>
+            <div class="material-item"><span class="material-name">Tornillos T2:</span><span class="material-qty">${tornillosCielo} unids.</span></div>
+            <div class="material-item"><span class="material-name">Tarugos y Tornillos fijación:</span><span class="material-qty">${fijacionesCielo} unids.</span></div>
+            <div class="material-item"><span class="material-name">Masilla:</span><span class="material-qty">${masillaCielo} kg</span></div>
+            <div class="material-item"><span class="material-name">Cinta de papel:</span><span class="material-qty">${cintaCielo} mts</span></div>
+        `;
+    }
 
-.option-btn.active {
-    border-color: #2980b9;
-    background-color: #ebf5fb;
-    font-weight: 600;
-}
-
-.preview-panel {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.preview-panel h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: #34495e;
-}
-
-.simulation-stage {
-    width: 100%;
-    height: 350px;
-    border: 4px solid #333;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-}
-
-.wall-layer {
-    flex: 2;
-    position: relative;
-    transition: background-color 0.3s ease;
-}
-
-.accent-layer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 25px;
-    transition: background-color 0.3s ease;
-}
-
-.floor-layer {
-    flex: 1;
-    border-top: 3px solid rgba(0,0,0,0.2);
-    transform: perspective(300px) rotateX(20deg);
-    transform-origin: top center;
-    transition: background-color 0.3s ease;
-}
-
-.selection-summary {
-    margin-top: 1.2rem;
-    font-size: 0.95rem;
-    color: #555;
-    text-align: center;
-}
+    contenedorResultados.innerHTML = htmlResultados;
+});
