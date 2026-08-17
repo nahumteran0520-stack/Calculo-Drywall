@@ -80,19 +80,27 @@ p.subtitle {
     margin-top: 15px;
 }
 
-.card-img-opcion img {
-    width: 100%;
-    height: 180px;          /* Un tamaño generoso y vistoso */
-    object-fit: contain;    /* Muestra la imagen completa sin recortar nada */
-    background-color: #ffffff; 
-    display: block;
-    border-radius: 10px;
+.card-img-opcion {
+    background: transparent;
+    border: none;           /* Eliminamos el borde */
+    padding: 0;             /* Eliminamos el espacio interno */
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra más suave para que resalte */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.card-img-opcion:hover {
-    transform: translateY(-4px);
-    border-color: var(--epa-azul);
-    box-shadow: 0 8px 20px rgba(0, 51, 102, 0.2);
+.card-img-opcion img {
+    width: 100%;
+    height: 200px;          /* Un poco más grande para mayor impacto */
+    object-fit: cover;      /* Ocupa todo el recuadro */
+    object-position: center;
+    display: block;
+    /* Quitamos el border-radius de la imagen para que rellene todo el contenedor */
 }
 
 /* Formulario */
