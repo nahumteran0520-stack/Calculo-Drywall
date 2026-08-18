@@ -1,30 +1,21 @@
-const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv';
+// Añadimos una marca de tiempo para evitar que el navegador guarde el CSV en caché vieja
+const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv&t=' + new Date().getTime();
 
-// Precios de respaldo por si el navegador bloquea la red
-let listaProductos = [
-    { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 10.50, existencia: 50 },
-    { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 4.20, existencia: 30 },
-    { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 4.80, existencia: 25 },
-    { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 9.00, existencia: 40 },
-    { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 3.50, existencia: 20 },
-    { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 4.00, existencia: 15 },
-    { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 3.20, existencia: 35 }
-];
+// Lista vacía por defecto para obligar a usar los datos reales de la nube
+let listaProductos = [];
 
 let tipoActual = '';
 
 async function obtenerPrecios() {
     try {
         const response = await fetch(urlCSV);
-        if (!response.ok) throw new Error('Error al conectar');
+        if (!response.ok) throw new Error('Error al conectar con la hoja');
         const data = await response.text();
         
         const lineas = data.split('\n');
         const productosRemotos = lineas.slice(1).map(linea => {
             const separador = linea.includes(';') ? ';' : ',';
             const columnas = linea.split(separador).map(c => c.trim().replace(/"/g, ''));
-            
-            // Filtramos para ignorar columnas vacías y quedarnos solo con las que tienen datos de producto
             const datosValidos = columnas.filter(c => c !== '');
             
             if (datosValidos.length >= 4) {
@@ -40,12 +31,21 @@ async function obtenerPrecios() {
         
         if (productosRemotos.length > 0) {
             listaProductos = productosRemotos;
-            console.log("Precios sincronizados correctamente desde Google Sheets:", listaProductos);
+            console.log("¡Precios actualizados desde Google Sheets!", listaProductos);
         }
     } catch (error) {
-        console.warn("Usando datos locales de respaldo:", error);
+        console.warn("Error al sincronizar con Google Sheets, usando respaldo de emergencia.", error);
+        // Respaldo de emergencia solo si falla totalmente la red
+        listaProductos = [
+            { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 25.30, existencia: 83 },
+            { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55, existencia: 82 },
+            { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16, existencia: 42 },
+            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44, existencia: 16 }
+        ];
     }
 }
+
+// Cargar precios apenas abre la página
 document.addEventListener('DOMContentLoaded', obtenerPrecios);
 
 function seleccionarModulo(tipo) {
@@ -205,7 +205,7 @@ function generarResultados() {
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
-                <td>$${pParalC.precio.toFixed(2)}</td> <!-- Corregido aquí -->
+                <td>$${pParalC.precio.toFixed(2)}</td>
                 <td><span style="color: ${pParalC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pParalC.existencia}</span></td>
             </tr>
             <tr>
