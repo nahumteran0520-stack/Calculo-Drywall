@@ -53,26 +53,27 @@
         </div>
 
         <!-- Tabla de Resultados (Oculto al inicio) -->
-        <div id="seccion-resultados" class="card hidden">
-            <h2>Resultados de Materiales</h2>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Artículo</th>
-                            <th>Codigo</th>
-                            <th>Descripcion</th>
-                            <th>Cantidad</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-cuerpo">
-                        <!-- Los resultados se cargan aquí dinámicamente -->
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
-        </div>
+       <div id="seccion-resultados" class="card hidden">
+    <h2>Resultados de Materiales</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ítem</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Cant.</th>
+                    <th>Precio U.</th>
+                    <th>Existencia</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-cuerpo">
+                <!-- Los resultados se cargan aquí dinámicamente -->
+            </tbody>
+        </table>
     </div>
+    <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
+</div>
 
     <script src="script.js"></script>
 </body>
