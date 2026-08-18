@@ -1,4 +1,3 @@
-// Usamos una URL de descarga directa de CSV de Google Sheets con marca de tiempo
 const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?output=csv&gid=1537817865&t=' + new Date().getTime();
 
 let listaProductos = [];
@@ -25,10 +24,8 @@ async function obtenerPrecios() {
         }).filter(p => p !== null && p.codigo);
 
         if (listaProductos.length === 0) throw new Error("Datos vacíos");
-        console.log("Precios cargados desde Google Sheets:", listaProductos);
     } catch (error) {
         console.warn("Usando respaldo actualizado:", error);
-        // Respaldo manual con tus precios reales actuales (incluyendo los de cielo suspendido)
         listaProductos = [
             { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 25.30, existencia: 83 },
             { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 26.25, existencia: 63 },
@@ -53,12 +50,17 @@ function seleccionarModulo(tipo) {
     document.getElementById('seccion-menu').classList.add('hidden');
     document.getElementById('seccion-calculo').classList.remove('hidden');
     
+    const etiquetaMedida1 = document.getElementById('label-medida1');
+
     if (tipo === 'pared') {
         document.getElementById('titulo-modulo').innerText = 'Paredes con Drywall';
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Alto';
     } else if (tipo === 'cielo_suspendido') {
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Suspendido (1.20x0.60)';
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho';
     } else {
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho';
     }
     
     document.getElementById('alto').value = '';
@@ -92,7 +94,7 @@ function generarResultados() {
     const largo = parseFloat(document.getElementById('largo').value);
 
     if (!alto || !largo || alto <= 0 || largo <= 0) {
-        alert('Por favor, ingresa valores válidos para el alto/ancho y el largo.');
+        alert('Por favor, ingresa valores válidos para las medidas.');
         return;
     }
 
@@ -165,7 +167,6 @@ function generarResultados() {
             </tr>
         `;
     } else if (tipoActual === 'cielo_suspendido') {
-        // Fórmulas exactas solicitadas con redondeo hacia arriba
         const cantLaminas = Math.ceil(area / 0.72);
         const cantAngulo = Math.ceil(((alto + largo) * 2) / 3.00);
         const cantPrincipal = Math.ceil(area * 0.23);
