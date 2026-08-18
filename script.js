@@ -28,7 +28,7 @@ async function obtenerPrecios() {
         console.log("Precios cargados desde Google Sheets:", listaProductos);
     } catch (error) {
         console.warn("Usando respaldo actualizado:", error);
-        // Respaldo manual con tus precios reales actuales
+        // Respaldo manual con tus precios reales actuales (incluyendo los de cielo suspendido)
         listaProductos = [
             { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 25.30, existencia: 83 },
             { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 26.25, existencia: 63 },
@@ -55,6 +55,8 @@ function seleccionarModulo(tipo) {
     
     if (tipo === 'pared') {
         document.getElementById('titulo-modulo').innerText = 'Paredes con Drywall';
+    } else if (tipo === 'cielo_suspendido') {
+        document.getElementById('titulo-modulo').innerText = 'Cielo Raso Suspendido (1.20x0.60)';
     } else {
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
     }
@@ -162,6 +164,60 @@ function generarResultados() {
                 <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminas.existencia}</span></td>
             </tr>
         `;
+    } else if (tipoActual === 'cielo_suspendido') {
+        // Fórmulas exactas solicitadas con redondeo hacia arriba
+        const cantLaminas = Math.ceil(area / 0.72);
+        const cantAngulo = Math.ceil(((alto + largo) * 2) / 3.00);
+        const cantPrincipal = Math.ceil(area * 0.23);
+        const cantSecundario = Math.ceil(area * 1.37);
+
+        const pLam = obtenerDatosProducto('3015030');
+        const pPrin = obtenerDatosProducto('3015002');
+        const pSec = obtenerDatosProducto('3015004');
+        const pAng = obtenerDatosProducto('3015008');
+
+        const total = (cantLaminas * pLam.precio) + (cantPrincipal * pPrin.precio) + 
+                      (cantSecundario * pSec.precio) + (cantAngulo * pAng.precio);
+
+        htmlTabla = `
+            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO SUSPENDIDO (1.20x0.60)</td></tr>
+            <tr>
+                <td><strong>Laminas</strong></td>
+                <td>3015030</td>
+                <td style="text-align: left;">${pLam.descripcion}</td>
+                <td><strong>${cantLaminas}</strong></td>
+                <td>$${pLam.precio.toFixed(2)}</td>
+                <td><span style="color: ${pLam.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLam.existencia}</span></td>
+            </tr>
+            <tr>
+                <td><strong>Perfil Principal</strong></td>
+                <td>3015002</td>
+                <td style="text-align: left;">${pPrin.descripcion}</td>
+                <td><strong>${cantPrincipal}</strong></td>
+                <td>$${pPrin.precio.toFixed(2)}</td>
+                <td><span style="color: ${pPrin.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pPrin.existencia}</span></td>
+            </tr>
+            <tr>
+                <td><strong>Perfil Secundario</strong></td>
+                <td>3015004</td>
+                <td style="text-align: left;">${pSec.descripcion}</td>
+                <td><strong>${cantSecundario}</strong></td>
+                <td>$${pSec.precio.toFixed(2)}</td>
+                <td><span style="color: ${pSec.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pSec.existencia}</span></td>
+            </tr>
+            <tr>
+                <td><strong>Perfil Ángulo</strong></td>
+                <td>3015008</td>
+                <td style="text-align: left;">${pAng.descripcion}</td>
+                <td><strong>${cantAngulo}</strong></td>
+                <td>$${pAng.precio.toFixed(2)}</td>
+                <td><span style="color: ${pAng.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pAng.existencia}</span></td>
+            </tr>
+            <tr>
+                <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td><strong>$${total.toFixed(2)}</strong></td>
+            </tr>
+        `;
     } else {
         const anchoArea = alto; 
         const largoArea = largo;
@@ -184,6 +240,7 @@ function generarResultados() {
                            (cantOmega * pOmega.precio);
 
         htmlTabla = `
+            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO DRYWALL</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020001</td>
