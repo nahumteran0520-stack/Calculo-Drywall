@@ -26,9 +26,8 @@
                 <button class="card-img-opcion" onclick="seleccionarModulo('cielo')">
                     <img src="cielo.jpg" alt="Cielo Raso Drywall">
                 </button>
-                <!-- NUEVO BOTÓN PARA CIELO RASO SUSPENDIDO -->
-                <button class="card-img-opcion" onclick="seleccionarModulo('cielo_suspendido')" style="background: #f8fafc; border: 2px dashed #cbd5e1; padding: 15px; cursor: pointer; border-radius: 8px; font-weight: bold; color: #1a4472;">
-                    Cielo Raso Suspendido (1.20x0.60)
+                <button class="card-img-opcion" onclick="seleccionarModulo('cielo_suspendido')">
+                    <img src="cielo_suspendido.jpg" alt="Cielo Raso Suspendido">
                 </button>
             </div>
         </div>
@@ -39,7 +38,7 @@
             <h2 id="titulo-modulo">Calculadora</h2>
 
             <div class="form-group">
-                <label for="alto">Alto</label>
+                <label for="alto" id="label-medida1">Alto</label>
                 <input type="number" id="alto" step="0.01" placeholder="Ej. 2" oninput="calcularArea()">
             </div>
 
@@ -57,27 +56,28 @@
         </div>
 
         <!-- Tabla de Resultados (Oculto al inicio) -->
-       <div id="seccion-resultados" class="card hidden">
-    <h2>Resultados de Materiales</h2>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>Ítem</th>
-                    <th>Código</th>
-                    <th>Descripción</th>
-                    <th>Cant.</th>
-                    <th>Precio U.</th>
-                    <th>Existencia</th>
-                </tr>
-            </thead>
-            <tbody id="tabla-cuerpo">
-                <!-- Los resultados se cargan aquí dinámicamente -->
-            </tbody>
-        </table>
+        <div id="seccion-resultados" class="card hidden">
+            <h2>Resultados de Materiales</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ítem</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Cant.</th>
+                            <th>Precio U.</th>
+                            <th>Existencia</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cuerpo">
+                        <!-- Los resultados se cargan aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
+        </div>
     </div>
-    <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
-</div>
 
     <script src="script.js"></script>
 </body>
