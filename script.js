@@ -1,3 +1,71 @@
+const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv';
+
+let listaProductos = [];
+let tipoActual = '';
+
+// Función para descargar los precios y existencias desde Google Sheets automáticamente
+async function obtenerPrecios() {
+    try {
+        const response = await fetch(urlCSV);
+        const data = await response.text();
+        
+        const lineas = data.split('\n');
+        listaProductos = lineas.slice(1).map(linea => {
+            const columnas = linea.split(',');
+            return {
+                codigo: columnas[0] ? columnas[0].trim() : '',
+                descripcion: columnas[1] ? columnas[1].trim() : '',
+                precio: parseFloat(columnas[2]) || 0,
+                existencia: parseInt(columnas[3]) || 0
+            };
+        }).filter(p => p.codigo);
+        
+        console.log("Precios cargados correctamente desde Google Sheets:", listaProductos);
+    } catch (error) {
+        console.error("Error al obtener los precios:", error);
+    }
+}
+
+// Cargar los precios al iniciar la página de forma segura
+document.addEventListener('DOMContentLoaded', obtenerPrecios);
+
+function seleccionarModulo(tipo) {
+    tipoActual = tipo;
+    document.getElementById('seccion-menu').classList.add('hidden');
+    document.getElementById('seccion-calculo').classList.remove('hidden');
+    
+    if (tipo === 'pared') {
+        document.getElementById('titulo-modulo').innerText = 'Paredes con Drywall';
+    } else {
+        document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
+    }
+    
+    document.getElementById('alto').value = '';
+    document.getElementById('largo').value = '';
+    document.getElementById('area').value = '';
+}
+
+function volverMenu() {
+    document.getElementById('seccion-calculo').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-menu').classList.remove('hidden');
+}
+
+function nuevoCalculo() {
+    document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-calculo').classList.remove('hidden');
+    document.getElementById('alto').value = '';
+    document.getElementById('largo').value = '';
+    document.getElementById('area').value = '';
+}
+
+function calcularArea() {
+    const alto = parseFloat(document.getElementById('alto').value) || 0;
+    const largo = parseFloat(document.getElementById('largo').value) || 0;
+    const area = alto * largo;
+    document.getElementById('area').value = area > 0 ? area.toFixed(2) : '';
+}
+
 function generarResultados() {
     const alto = parseFloat(document.getElementById('alto').value);
     const largo = parseFloat(document.getElementById('largo').value);
@@ -10,10 +78,10 @@ function generarResultados() {
     const area = alto * largo;
     let htmlTabla = '';
 
-    // Función auxiliar para buscar en los datos de Google Sheets
+    // Función auxiliar para buscar el producto exacto en Google Sheets por su código
     function obtenerDatosProducto(codigoBuscado) {
-        const prod = listaProductos.find(p => p.codigo == codigoBuscado);
-        return prod ? prod : { precio: 0, existencia: 0, descripcion: "No encontrado" };
+        const prod = listaProductos.find(p => p.codigo === codigoBuscado);
+        return prod ? prod : { precio: 0, existence: 0, descripcion: "Artículo no encontrado en red" };
     }
 
     if (tipoActual === 'pared') {
@@ -29,7 +97,7 @@ function generarResultados() {
         const cantLaminasSimple = laminasBase;
         const cantLaminasDobleCara = laminasBase * 2;
 
-        // Consultamos precios y existencias por código desde Google Sheets
+        // Consultamos precios y existencias reales
         const pLaminas = obtenerDatosProducto('3020002');
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
@@ -40,10 +108,10 @@ function generarResultados() {
         const totalSimple = subtotalLaminas + subtotalRiel + subtotalParal;
 
         htmlTabla = `
-            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
             <tr style="background-color: #f8fafc; font-weight: bold; font-size: 0.85rem; color: #64748b;">
                 <td>Ítem</td><td>Código</td><td>Descripción</td><td>Cant.</td><td>Precio U.</td><td>Existencia</td>
             </tr>
+            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020002</td>
@@ -130,7 +198,7 @@ function generarResultados() {
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
-                <td>$${pParalC.precio.toFixed(2)}</td>
+                <td>$${pRielC.precio.toFixed(2)}</td>
                 <td><span style="color: ${pParalC.existencia > 0 ? 'green' : 'red'};">${pParalC.existencia}</span></td>
             </tr>
             <tr>
@@ -149,6 +217,9 @@ function generarResultados() {
     }
 
     document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
+    document.getElementById('seccion-calculo').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.remove('hidden');
+}HTML = htmlTabla;
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
