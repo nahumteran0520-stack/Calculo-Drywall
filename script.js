@@ -1,16 +1,26 @@
 const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv';
 
-let listaProductos = [];
+// Precios de respaldo por si el navegador bloquea la red
+let listaProductos = [
+    { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 10.50, existencia: 50 },
+    { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 4.20, existencia: 30 },
+    { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 4.80, existencia: 25 },
+    { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 9.00, existencia: 40 },
+    { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 3.50, existencia: 20 },
+    { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 4.00, existencia: 15 },
+    { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 3.20, existencia: 35 }
+];
+
 let tipoActual = '';
 
-// Función para descargar los precios y existencias desde Google Sheets automáticamente
 async function obtenerPrecios() {
     try {
         const response = await fetch(urlCSV);
+        if (!response.ok) throw new Error('Error al conectar');
         const data = await response.text();
         
         const lineas = data.split('\n');
-        listaProductos = lineas.slice(1).map(linea => {
+        const productosRemotos = lineas.slice(1).map(linea => {
             const columnas = linea.split(',');
             return {
                 codigo: columnas[0] ? columnas[0].trim() : '',
@@ -20,13 +30,14 @@ async function obtenerPrecios() {
             };
         }).filter(p => p.codigo);
         
-        console.log("Precios cargados correctamente desde Google Sheets:", listaProductos);
+        if (productosRemotos.length > 0) {
+            listaProductos = productosRemotos;
+        }
     } catch (error) {
-        console.error("Error al obtener los precios:", error);
+        console.warn("Usando datos locales de respaldo.");
     }
 }
 
-// Cargar los precios al iniciar la página de forma segura
 document.addEventListener('DOMContentLoaded', obtenerPrecios);
 
 function seleccionarModulo(tipo) {
@@ -78,10 +89,9 @@ function generarResultados() {
     const area = alto * largo;
     let htmlTabla = '';
 
-    // Función auxiliar para buscar el producto exacto en Google Sheets por su código
     function obtenerDatosProducto(codigoBuscado) {
         const prod = listaProductos.find(p => p.codigo === codigoBuscado);
-        return prod ? prod : { precio: 0, existence: 0, descripcion: "Artículo no encontrado en red" };
+        return prod ? prod : { precio: 0, existencia: 0, descripcion: "Artículo no disponible" };
     }
 
     if (tipoActual === 'pared') {
@@ -97,20 +107,13 @@ function generarResultados() {
         const cantLaminasSimple = laminasBase;
         const cantLaminasDobleCara = laminasBase * 2;
 
-        // Consultamos precios y existencias reales
         const pLaminas = obtenerDatosProducto('3020002');
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
 
-        const subtotalLaminas = cantLaminasSimple * pLaminas.precio;
-        const subtotalRiel = cantRiel * pRiel.precio;
-        const subtotalParal = cantParal * pParal.precio;
-        const totalSimple = subtotalLaminas + subtotalRiel + subtotalParal;
+        const totalSimple = (cantLaminasSimple * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
 
         htmlTabla = `
-            <tr style="background-color: #f8fafc; font-weight: bold; font-size: 0.85rem; color: #64748b;">
-                <td>Ítem</td><td>Código</td><td>Descripción</td><td>Cant.</td><td>Precio U.</td><td>Existencia</td>
-            </tr>
             <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
@@ -118,7 +121,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasSimple}</strong></td>
                 <td>$${pLaminas.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'};">${pLaminas.existencia}</span></td>
+                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminas.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -126,7 +129,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pRiel.descripcion}</td>
                 <td><strong>${cantRiel}</strong></td>
                 <td>$${pRiel.precio.toFixed(2)}</td>
-                <td><span style="color: ${pRiel.existencia > 0 ? 'green' : 'red'};">${pRiel.existencia}</span></td>
+                <td><span style="color: ${pRiel.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRiel.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -134,7 +137,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
                 <td>$${pParal.precio.toFixed(2)}</td>
-                <td><span style="color: ${pParal.existencia > 0 ? 'green' : 'red'};">${pParal.existencia}</span></td>
+                <td><span style="color: ${pParal.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pParal.existencia}</span></td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -148,11 +151,10 @@ function generarResultados() {
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasDobleCara}</strong></td>
                 <td>$${pLaminas.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'};">${pLaminas.existencia}</span></td>
+                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminas.existencia}</span></td>
             </tr>
         `;
     } else {
-        // Fórmulas para Cielo Raso
         const anchoArea = alto; 
         const largoArea = largo;
         const rendimientoLamina = 2.976;
@@ -174,16 +176,13 @@ function generarResultados() {
                            (cantOmega * pOmega.precio);
 
         htmlTabla = `
-            <tr style="background-color: #f8fafc; font-weight: bold; font-size: 0.85rem; color: #64748b;">
-                <td>Ítem</td><td>Código</td><td>Descripción</td><td>Cant.</td><td>Precio U.</td><td>Existencia</td>
-            </tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020001</td>
                 <td style="text-align: left;">${pLaminasC.descripcion}</td>
                 <td><strong>${cantLaminasCielo}</strong></td>
                 <td>$${pLaminasC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminasC.existencia > 0 ? 'green' : 'red'};">${pLaminasC.existencia}</span></td>
+                <td><span style="color: ${pLaminasC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminasC.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -191,7 +190,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pRielC.descripcion}</td>
                 <td><strong>${cantRielCielo}</strong></td>
                 <td>$${pRielC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pRielC.existencia > 0 ? 'green' : 'red'};">${pRielC.existencia}</span></td>
+                <td><span style="color: ${pRielC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRielC.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -199,7 +198,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
                 <td>$${pRielC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pParalC.existencia > 0 ? 'green' : 'red'};">${pParalC.existencia}</span></td>
+                <td><span style="color: ${pRielC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRielC.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
@@ -207,7 +206,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pOmega.descripcion}</td>
                 <td><strong>${cantOmega}</strong></td>
                 <td>$${pOmega.precio.toFixed(2)}</td>
-                <td><span style="color: ${pOmega.existencia > 0 ? 'green' : 'red'};">${pOmega.existencia}</span></td>
+                <td><span style="color: ${pOmega.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pOmega.existencia}</span></td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -217,9 +216,6 @@ function generarResultados() {
     }
 
     document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
-    document.getElementById('seccion-calculo').classList.add('hidden');
-    document.getElementById('seccion-resultados').classList.remove('hidden');
-}HTML = htmlTabla;
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
