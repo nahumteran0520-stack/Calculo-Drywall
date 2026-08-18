@@ -21,26 +21,31 @@ async function obtenerPrecios() {
         
         const lineas = data.split('\n');
         const productosRemotos = lineas.slice(1).map(linea => {
-            // Detectar si usa coma o punto y coma como separador
             const separador = linea.includes(';') ? ';' : ',';
-            const columnas = linea.split(separador);
-            return {
-                codigo: columnas[0] ? columnas[0].trim().replace(/"/g, '') : '',
-                descripcion: columnas[1] ? columnas[1].trim().replace(/"/g, '') : '',
-                precio: parseFloat(columnas[2] ? columnas[2].replace(',', '.') : 0) || 0,
-                existencia: parseInt(columnas[3]) || 0
-            };
-        }).filter(p => p.codigo);
+            const columnas = linea.split(separador).map(c => c.trim().replace(/"/g, ''));
+            
+            // Filtramos para ignorar columnas vacías y quedarnos solo con las que tienen datos de producto
+            const datosValidos = columnas.filter(c => c !== '');
+            
+            if (datosValidos.length >= 4) {
+                return {
+                    codigo: datosValidos[0],
+                    descripcion: datosValidos[1],
+                    precio: parseFloat(datosValidos[2].replace(',', '.')) || 0,
+                    existencia: parseInt(datosValidos[3]) || 0
+                };
+            }
+            return null;
+        }).filter(p => p !== null && p.codigo);
         
         if (productosRemotos.length > 0) {
             listaProductos = productosRemotos;
-            console.log("Precios cargados desde Google Sheets exitosamente.");
+            console.log("Precios sincronizados correctamente desde Google Sheets:", listaProductos);
         }
     } catch (error) {
-        console.warn("Usando datos locales de respaldo por restricciones de red.", error);
+        console.warn("Usando datos locales de respaldo:", error);
     }
 }
-
 document.addEventListener('DOMContentLoaded', obtenerPrecios);
 
 function seleccionarModulo(tipo) {
