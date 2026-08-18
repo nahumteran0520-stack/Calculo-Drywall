@@ -285,3 +285,25 @@ function generarResultados() {
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
+// Función para registrar el uso en Google Sheets
+function registrarUsoEnGoogleSheets(proyecto) {
+    const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec; // Pega aquí la URL de tu Web App de Apps Script
+    
+    if (!urlScriptApp || urlScriptApp.includes("TU_URL")) return;
+
+    const fechaActual = new Date().toLocaleString(); // Captura fecha y hora actual
+
+    const datos = {
+        fecha: fechaActual,
+        tipoProyecto: proyecto
+    };
+
+    fetch(urlScriptApp, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(datos)
+    }).catch(error => console.error("Error al registrar:", error));
+}
