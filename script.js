@@ -21,20 +21,23 @@ async function obtenerPrecios() {
         
         const lineas = data.split('\n');
         const productosRemotos = lineas.slice(1).map(linea => {
-            const columnas = linea.split(',');
+            // Detectar si usa coma o punto y coma como separador
+            const separador = linea.includes(';') ? ';' : ',';
+            const columnas = linea.split(separador);
             return {
-                codigo: columnas[0] ? columnas[0].trim() : '',
-                descripcion: columnas[1] ? columnas[1].trim() : '',
-                precio: parseFloat(columnas[2]) || 0,
+                codigo: columnas[0] ? columnas[0].trim().replace(/"/g, '') : '',
+                descripcion: columnas[1] ? columnas[1].trim().replace(/"/g, '') : '',
+                precio: parseFloat(columnas[2] ? columnas[2].replace(',', '.') : 0) || 0,
                 existencia: parseInt(columnas[3]) || 0
             };
         }).filter(p => p.codigo);
         
         if (productosRemotos.length > 0) {
             listaProductos = productosRemotos;
+            console.log("Precios cargados desde Google Sheets exitosamente.");
         }
     } catch (error) {
-        console.warn("Usando datos locales de respaldo.");
+        console.warn("Usando datos locales de respaldo por restricciones de red.", error);
     }
 }
 
@@ -197,8 +200,8 @@ function generarResultados() {
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
-                <td>$${pRielC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pRielC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRielC.existencia}</span></td>
+                <td>$${pParalC.precio.toFixed(2)}</td> <!-- Corregido aquí -->
+                <td><span style="color: ${pParalC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pParalC.existencia}</span></td>
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
