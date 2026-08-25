@@ -291,18 +291,12 @@ function registrarUsoEnGoogleSheets(proyecto) {
     const fechaSolo = ahora.toLocaleDateString();
     const horaSolo = ahora.toLocaleTimeString();
 
-    const datos = {
-        fecha: fechaSolo,
-        hora: horaSolo,
-        tipoProyecto: proyecto
-    };
+    // Mandamos los 3 datos separados por una pleca o coma en formato texto plano
+    const textoPlano = `${fechaSolo}|${horaSolo}|${proyecto}`;
 
     fetch(urlScriptApp, {
         method: "POST",
         mode: "no-cors",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(datos)
+        body: textoPlano
     }).catch(error => console.error("Error al registrar:", error));
 }
