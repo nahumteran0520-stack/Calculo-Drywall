@@ -291,12 +291,11 @@ function registrarUsoEnGoogleSheets(proyecto) {
     const fechaSolo = ahora.toLocaleDateString();
     const horaSolo = ahora.toLocaleTimeString();
 
-    // Mandamos los 3 datos separados por una pleca o coma en formato texto plano
-    const textoPlano = `${fechaSolo}|${horaSolo}|${proyecto}`;
+    // Adjuntamos los datos directo en la URL para evitar el bloqueo de no-cors
+    const urlCompleta = `${urlScriptApp}?fecha=${encodeURIComponent(fechaSolo)}&hora=${encodeURIComponent(horaSolo)}&proyecto=${encodeURIComponent(proyecto)}`;
 
-    fetch(urlScriptApp, {
+    fetch(urlCompleta, {
         method: "POST",
-        mode: "no-cors",
-        body: textoPlano
+        mode: "no-cors"
     }).catch(error => console.error("Error al registrar:", error));
 }
