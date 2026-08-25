@@ -287,13 +287,8 @@ function generarResultados() {
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
     
-    const ahora = new Date();
-    const fechaSolo = ahora.toLocaleDateString();
-    const horaSolo = ahora.toLocaleTimeString();
+    const urlCompleta = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}`;
 
-    const urlCompleta = `${urlScriptApp}?fecha=${encodeURIComponent(fechaSolo)}&hora=${encodeURIComponent(horaSolo)}&proyecto=${encodeURIComponent(proyecto)}`;
-
-    // Cambiamos a GET para que los datos viajen limpios por la URL sin bloqueos
     fetch(urlCompleta, {
         method: "GET",
         mode: "no-cors"
