@@ -285,12 +285,11 @@ function generarResultados() {
 }
 
 function registrarUsoEnGoogleSheets(proyecto) {
-    const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec";
+    const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
     
-    // Obtenemos la fecha y la hora por separado usando formato local seguro
     const ahora = new Date();
-    const fechaSolo = ahora.toLocaleDateString(); // Ej: "25/8/2026"
-    const horaSolo = ahora.toLocaleTimeString();   // Ej: "4:10:58 p. m."
+    const fechaSolo = ahora.toLocaleDateString();
+    const horaSolo = ahora.toLocaleTimeString();
 
     const datos = {
         fecha: fechaSolo,
