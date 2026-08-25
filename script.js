@@ -217,7 +217,7 @@ function generarResultados() {
                 <td style="width: 120px;">$${pAng.precio.toFixed(2)}</td>
             </tr>
             <tr>
-                <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
                 <td><strong>$${total.toFixed(2)}</strong></td>
             </tr>
         `;
@@ -273,7 +273,7 @@ function generarResultados() {
                  <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
             </tr>
             <tr>
-                <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
                 <td><strong>$${totalCielo.toFixed(2)}</strong></td>
             </tr>
         `;
