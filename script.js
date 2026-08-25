@@ -291,11 +291,11 @@ function registrarUsoEnGoogleSheets(proyecto) {
     const fechaSolo = ahora.toLocaleDateString();
     const horaSolo = ahora.toLocaleTimeString();
 
-    // Adjuntamos los datos directo en la URL para evitar el bloqueo de no-cors
     const urlCompleta = `${urlScriptApp}?fecha=${encodeURIComponent(fechaSolo)}&hora=${encodeURIComponent(horaSolo)}&proyecto=${encodeURIComponent(proyecto)}`;
 
+    // Cambiamos a GET para que los datos viajen limpios por la URL sin bloqueos
     fetch(urlCompleta, {
-        method: "POST",
+        method: "GET",
         mode: "no-cors"
     }).catch(error => console.error("Error al registrar:", error));
 }
