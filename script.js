@@ -287,10 +287,12 @@ function generarResultados() {
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
     
+    // Mandamos el parámetro por POST seguro usando sendBeacon
     const urlCompleta = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}`;
 
-    fetch(urlCompleta, {
-        method: "GET",
-        mode: "no-cors"
-    }).catch(error => console.error("Error al registrar:", error));
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon(urlCompleta);
+    } else {
+        fetch(urlCompleta, { method: "POST", mode: "no-cors" });
+    }
 }
