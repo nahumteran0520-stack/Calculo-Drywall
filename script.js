@@ -141,35 +141,35 @@ function generarResultados() {
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasSimple}</strong></td>
-                <td>$${pLaminas.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
                 <td>3020106</td>
                 <td style="text-align: left;">${pRiel.descripcion}</td>
                 <td><strong>${cantRiel}</strong></td>
-                <td>$${pRiel.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pRiel.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020108</td>
                 <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
-                <td>$${pParal.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pParal.precio.toFixed(2)}</td>
             </tr>
             <tr>
-                <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
                 <td><strong>$${totalSimple.toFixed(2)}</strong></td>
             </tr>
 
-            <tr><td colspan="6" style="background-color: #cbd5e1; font-weight: bold; color: #1a4472;">CÁLCULO POR AMBOS LADOS (Doble cara)</td></tr>
+            <tr><td colspan="5" style="background-color: #cbd5e1; font-weight: bold; color: #1a4472;">CÁLCULO POR AMBOS LADOS (Doble cara)</td></tr>
             <tr>
                 <td><strong>Laminas (Doble)</strong></td>
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasDobleCara}</strong></td>
-                <td>$${pLaminas.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminas.existencia}</span></td>
+               <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
+               
             </tr>
         `;
     } else if (tipoActual === 'cielo_suspendido') {
@@ -193,28 +193,28 @@ function generarResultados() {
                 <td>3015030</td>
                 <td style="text-align: left;">${pLam.descripcion}</td>
                 <td><strong>${cantLaminas}</strong></td>
-                <td>$${pLam.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pLam.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Principal</strong></td>
                 <td>3015002</td>
                 <td style="text-align: left;">${pPrin.descripcion}</td>
                 <td><strong>${cantPrincipal}</strong></td>
-                <td>$${pPrin.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pPrin.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Secundario</strong></td>
                 <td>3015004</td>
                 <td style="text-align: left;">${pSec.descripcion}</td>
                 <td><strong>${cantSecundario}</strong></td>
-                <td>$${pSec.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pSec.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Ángulo</strong></td>
                 <td>3015008</td>
                 <td style="text-align: left;">${pAng.descripcion}</td>
                 <td><strong>${cantAngulo}</strong></td>
-                <td>$${pAng.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pAng.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -249,28 +249,28 @@ function generarResultados() {
                 <td>3020001</td>
                 <td style="text-align: left;">${pLaminasC.descripcion}</td>
                 <td><strong>${cantLaminasCielo}</strong></td>
-                <td>$${pLaminasC.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pLaminasC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
                 <td>3020100</td>
                 <td style="text-align: left;">${pRielC.descripcion}</td>
                 <td><strong>${cantRielCielo}</strong></td>
-                <td>$${pRielC.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pRielC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
-                <td>$${pParalC.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pParalC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
                 <td>3020102</td>
                 <td style="text-align: left;">${pOmega.descripcion}</td>
                 <td><strong>${cantOmega}</strong></td>
-                <td>$${pOmega.precio.toFixed(2)}</td>
+                 <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
