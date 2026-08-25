@@ -1,4 +1,4 @@
-const urlCSV ='https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv';
+const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHtyk2N7TAjCPULStF16cAUZR8fUoXYzWhVTITeErATG8AHiRqPDQ/pub?gid=1537817865&single=true&output=csv';
 let listaProductos = [];
 let tipoActual = '';
 
@@ -97,7 +97,6 @@ function generarResultados() {
         return;
     }
 
-    // --- Lógica de Registro en Google Sheets ---
     let nombreProyectoRegistro = '';
     if (tipoActual === 'pared') {
         nombreProyectoRegistro = 'Paredes Drywall';
@@ -107,7 +106,6 @@ function generarResultados() {
         nombreProyectoRegistro = 'Cielo Raso Drywall';
     }
     registrarUsoEnGoogleSheets(nombreProyectoRegistro);
-    // -------------------------------------------
 
     const area = alto * largo;
     let htmlTabla = '';
@@ -144,7 +142,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasSimple}</strong></td>
                 <td>$${pLaminas.precio.toFixed(2)}</td>
-                
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -152,7 +149,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pRiel.descripcion}</td>
                 <td><strong>${cantRiel}</strong></td>
                 <td>$${pRiel.precio.toFixed(2)}</td>
-               
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -160,7 +156,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
                 <td>$${pParal.precio.toFixed(2)}</td>
-          
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -189,7 +184,7 @@ function generarResultados() {
         const pAng = obtenerDatosProducto('3015008');
 
         const total = (cantLaminas * pLam.precio) + (cantPrincipal * pPrin.precio) + 
-                      (cantSecundario * pSec.precio) + (cantAngulo * pAng.precio);
+                    (cantSecundario * pSec.precio) + (cantAngulo * pAng.precio);
 
         htmlTabla = `
             <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO SUSPENDIDO (1.20x0.60)</td></tr>
@@ -199,7 +194,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pLam.descripcion}</td>
                 <td><strong>${cantLaminas}</strong></td>
                 <td>$${pLam.precio.toFixed(2)}</td>
-    
             </tr>
             <tr>
                 <td><strong>Perfil Principal</strong></td>
@@ -207,7 +201,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pPrin.descripcion}</td>
                 <td><strong>${cantPrincipal}</strong></td>
                 <td>$${pPrin.precio.toFixed(2)}</td>
-                
             </tr>
             <tr>
                 <td><strong>Perfil Secundario</strong></td>
@@ -215,7 +208,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pSec.descripcion}</td>
                 <td><strong>${cantSecundario}</strong></td>
                 <td>$${pSec.precio.toFixed(2)}</td>
-               
             </tr>
             <tr>
                 <td><strong>Perfil Ángulo</strong></td>
@@ -223,7 +215,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pAng.descripcion}</td>
                 <td><strong>${cantAngulo}</strong></td>
                 <td>$${pAng.precio.toFixed(2)}</td>
-               
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -259,7 +250,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pLaminasC.descripcion}</td>
                 <td><strong>${cantLaminasCielo}</strong></td>
                 <td>$${pLaminasC.precio.toFixed(2)}</td>
-                
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -267,7 +257,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pRielC.descripcion}</td>
                 <td><strong>${cantRielCielo}</strong></td>
                 <td>$${pRielC.precio.toFixed(2)}</td>
-               
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -275,7 +264,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
                 <td>$${pParalC.precio.toFixed(2)}</td>
-          
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
@@ -283,7 +271,6 @@ function generarResultados() {
                 <td style="text-align: left;">${pOmega.descripcion}</td>
                 <td><strong>${cantOmega}</strong></td>
                 <td>$${pOmega.precio.toFixed(2)}</td>
-               
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
