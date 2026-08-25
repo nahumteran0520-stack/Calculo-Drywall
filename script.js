@@ -287,12 +287,17 @@ function generarResultados() {
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
     
-    // Mandamos el parámetro por POST seguro usando sendBeacon
-    const urlCompleta = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}`;
-
-    if (navigator.sendBeacon) {
-        navigator.sendBeacon(urlCompleta);
-    } else {
-        fetch(urlCompleta, { method: "POST", mode: "no-cors" });
+    // Crear un iframe oculto en el DOM es el método infalible 100% compatible con Web Apps de Google
+    const iframeId = 'hidden-sheet-iframe';
+    let iframe = document.getElementById(iframeId);
+    
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = iframeId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
     }
+    
+    // Asignar la URL con el parámetro para que el servidor de Google procese el appendRow de inmediato
+    iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
 }
