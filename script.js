@@ -115,7 +115,7 @@ function generarResultados() {
 
     function obtenerDatosProducto(codigoBuscado) {
         const prod = listaProductos.find(p => p.codigo === codigoBuscado);
-        return prod ? prod : { precio: 0, existencia: 0, descripcion: "Artículo no disponible" };
+        return prod ? prod : { precio: 0, descripcion: "Artículo no disponible" };
     }
 
     if (tipoActual === 'pared') {
@@ -138,14 +138,14 @@ function generarResultados() {
         const totalSimple = (cantLaminasSimple * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
 
         htmlTabla = `
-            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
+            <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasSimple}</strong></td>
                 <td>$${pLaminas.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminas.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminas.existencia}</span></td>
+                
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -153,7 +153,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pRiel.descripcion}</td>
                 <td><strong>${cantRiel}</strong></td>
                 <td>$${pRiel.precio.toFixed(2)}</td>
-                <td><span style="color: ${pRiel.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRiel.existencia}</span></td>
+               
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -161,7 +161,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
                 <td>$${pParal.precio.toFixed(2)}</td>
-                <td><span style="color: ${pParal.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pParal.existencia}</span></td>
+          
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -193,14 +193,14 @@ function generarResultados() {
                       (cantSecundario * pSec.precio) + (cantAngulo * pAng.precio);
 
         htmlTabla = `
-            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO SUSPENDIDO (1.20x0.60)</td></tr>
+            <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO SUSPENDIDO (1.20x0.60)</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3015030</td>
                 <td style="text-align: left;">${pLam.descripcion}</td>
                 <td><strong>${cantLaminas}</strong></td>
                 <td>$${pLam.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLam.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLam.existencia}</span></td>
+    
             </tr>
             <tr>
                 <td><strong>Perfil Principal</strong></td>
@@ -208,7 +208,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pPrin.descripcion}</td>
                 <td><strong>${cantPrincipal}</strong></td>
                 <td>$${pPrin.precio.toFixed(2)}</td>
-                <td><span style="color: ${pPrin.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pPrin.existencia}</span></td>
+                
             </tr>
             <tr>
                 <td><strong>Perfil Secundario</strong></td>
@@ -216,7 +216,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pSec.descripcion}</td>
                 <td><strong>${cantSecundario}</strong></td>
                 <td>$${pSec.precio.toFixed(2)}</td>
-                <td><span style="color: ${pSec.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pSec.existencia}</span></td>
+               
             </tr>
             <tr>
                 <td><strong>Perfil Ángulo</strong></td>
@@ -224,7 +224,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pAng.descripcion}</td>
                 <td><strong>${cantAngulo}</strong></td>
                 <td>$${pAng.precio.toFixed(2)}</td>
-                <td><span style="color: ${pAng.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pAng.existencia}</span></td>
+               
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
@@ -253,14 +253,14 @@ function generarResultados() {
                            (cantOmega * pOmega.precio);
 
         htmlTabla = `
-            <tr><td colspan="6" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO DRYWALL</td></tr>
+            <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO DRYWALL</td></tr>
             <tr>
                 <td><strong>Laminas</strong></td>
                 <td>3020001</td>
                 <td style="text-align: left;">${pLaminasC.descripcion}</td>
                 <td><strong>${cantLaminasCielo}</strong></td>
                 <td>$${pLaminasC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pLaminasC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pLaminasC.existencia}</span></td>
+                
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
@@ -268,7 +268,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pRielC.descripcion}</td>
                 <td><strong>${cantRielCielo}</strong></td>
                 <td>$${pRielC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pRielC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pRielC.existencia}</span></td>
+               
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
@@ -276,7 +276,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
                 <td>$${pParalC.precio.toFixed(2)}</td>
-                <td><span style="color: ${pParalC.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pParalC.existencia}</span></td>
+          
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
@@ -284,7 +284,7 @@ function generarResultados() {
                 <td style="text-align: left;">${pOmega.descripcion}</td>
                 <td><strong>${cantOmega}</strong></td>
                 <td>$${pOmega.precio.toFixed(2)}</td>
-                <td><span style="color: ${pOmega.existencia > 0 ? 'green' : 'red'}; font-weight: bold;">${pOmega.existencia}</span></td>
+               
             </tr>
             <tr>
                 <td colspan="5" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
