@@ -286,10 +286,15 @@ function generarResultados() {
 
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
-    const fechaActual = new Date().toLocaleString();
+    
+    // Obtenemos la fecha y la hora por separado usando formato local seguro
+    const ahora = new Date();
+    const fechaSolo = ahora.toLocaleDateString(); // Ej: "25/8/2026"
+    const horaSolo = ahora.toLocaleTimeString();   // Ej: "4:10:58 p. m."
 
     const datos = {
-        fecha: fechaActual,
+        fecha: fechaSolo,
+        hora: horaSolo,
         tipoProyecto: proyecto
     };
 
