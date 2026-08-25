@@ -285,7 +285,7 @@ function generarResultados() {
 }
 
 function registrarUsoEnGoogleSheets(proyecto) {
-    const urlScriptApp = "https://script.google.com/macros/s/AKfycby4J0idBd33HvLFIdLmvprx9QRhP250C1CQ4zIwMLLwNe5zwxaEK4GH8TKo3Y8dMN_n/exec";
+    const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec";
     
     // Crear un iframe oculto en el DOM es el método infalible 100% compatible con Web Apps de Google
     const iframeId = 'hidden-sheet-iframe';
