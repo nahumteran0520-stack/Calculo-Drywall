@@ -133,6 +133,7 @@ function generarResultados() {
         const pParal = obtenerDatosProducto('3020108');
 
         const totalSimple = (cantLaminasSimple * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
+        const totalDoble = (cantLaminasDobleCara * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
 
         htmlTabla = `
             <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
@@ -169,7 +170,10 @@ function generarResultados() {
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasDobleCara}</strong></td>
                <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
-               
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL (DOBLE CARA):</strong></td>
+                <td><strong>$${totalDoble.toFixed(2)}</strong></td>
             </tr>
         `;
     } else if (tipoActual === 'cielo_suspendido') {
@@ -287,7 +291,6 @@ function generarResultados() {
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec";
     
-    // Crear un iframe oculto en el DOM es el método infalible 100% compatible con Web Apps de Google
     const iframeId = 'hidden-sheet-iframe';
     let iframe = document.getElementById(iframeId);
     
@@ -298,6 +301,5 @@ function registrarUsoEnGoogleSheets(proyecto) {
         document.body.appendChild(iframe);
     }
     
-    // Asignar la URL con el parámetro para que el servidor de Google procese el appendRow de inmediato
     iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
 }
