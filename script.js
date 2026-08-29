@@ -26,18 +26,18 @@ async function obtenerPrecios() {
     } catch (error) {
         console.warn("Usando respaldo actualizado:", error);
         listaProductos = [
-            { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 25.30, existencia: 83 },
-            { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 26.25, existencia: 63 },
-            { codigo: '3015030', descripcion: 'LÁMINA DE YESO LISA 1,20X0,60', precio: 8.88, existencia: 10 },
-            { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 9.50, existencia: 23 },
-            { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55, existencia: 82 },
-            { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16, existencia: 42 },
-            { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 7.00, existencia: 44 },
-            { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 8.23, existencia: 98 },
-            { codigo: '3015002', descripcion: 'PERFIL PRINCIPAL BLANCO 3,66', precio: 7.25, existencia: 96 },
-            { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32, existencia: 144 },
-            { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59, existencia: 186 },
-            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44, existencia: 16 }
+            { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 23.9 },
+            { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 24.9 },
+            { codigo: '3015030', descripcion: 'LÁMINA DE YESO LISA 1,20X0,60', precio: 8.88 },
+            { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 12.8},
+            { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55 },
+            { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16 },
+            { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 7.00 },
+            { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 8.23 },
+            { codigo: '3015002', descripcion: 'PERFIL PRINCIPAL BLANCO 3,66', precio: 7.25 },
+            { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32 },
+            { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59 },
+            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 }
         ];
     }
 }
