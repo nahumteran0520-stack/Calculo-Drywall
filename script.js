@@ -290,25 +290,119 @@ function generarResultados() {
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
 
-// Funciones nuevas para el manejo de la visualización del esquema estructural
+// Función que dibuja el esquema técnico de manera dinámica según las medidas
 function verEsquemaVisual() {
-    const imgEsquema = document.getElementById('imagen-esquema');
     const tituloEsquema = document.getElementById('titulo-esquema');
+    const canvas = document.getElementById('canvas-esquema');
+    const ctx = canvas.getContext('2d');
 
-    // Asignar la imagen correspondiente según la categoría activa
+    const alto = parseFloat(document.getElementById('alto').value) || 2.5;
+    const largo = parseFloat(document.getElementById('largo').value) || 3.0;
+
     if (tipoActual === 'pared') {
-        imgEsquema.src = 'pared.jpg';
-        tituloEsquema.innerText = 'Esquema: Paredes con Drywall';
+        tituloEsquema.innerText = 'Esquema Dinámico: Pared con Drywall';
     } else if (tipoActual === 'cielo_suspendido') {
-        imgEsquema.src = 'cielo_suspendido.jpg';
-        tituloEsquema.innerText = 'Esquema: Cielo Raso Suspendido';
+        tituloEsquema.innerText = 'Esquema Dinámico: Cielo Raso Suspendido';
     } else {
-        imgEsquema.src = 'cielo.jpg';
-        tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
+        tituloEsquema.innerText = 'Esquema Dinámico: Cielo Raso Drywall';
     }
 
     document.getElementById('seccion-resultados').classList.add('hidden');
     document.getElementById('seccion-esquema').classList.remove('hidden');
+
+    // Limpiar canvas anterior
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const padding = 50;
+    const drawWidth = canvas.width - (padding * 2);
+    const drawHeight = canvas.height - (padding * 2);
+
+    let scaleX = drawWidth / largo;
+    let scaleY = drawHeight / alto;
+    let scale = Math.min(scaleX, scaleY);
+
+    const rectWidth = largo * scale;
+    const rectHeight = alto * scale;
+    const startX = (canvas.width - rectWidth) / 2;
+    const startY = (canvas.height - rectHeight) / 2;
+
+    // Fondo blanco del área delimitada
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(startX, startY, rectWidth, rectHeight);
+
+    // Dibujo según el tipo de estructura
+    if (tipoActual === 'pared') {
+        // Rieles superior e inferior
+        ctx.strokeStyle = '#0833a2';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(startX + rectWidth, startY);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(startX, startY + rectHeight);
+        ctx.lineTo(startX + rectWidth, startY + rectHeight);
+        ctx.stroke();
+
+        // Parales verticales proporcionales (cada 0.61m simulados)
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#64748b';
+        let pasoParal = 0.61 * scale;
+        for (let x = startX + pasoParal; x < startX + rectWidth - 5; x += pasoParal) {
+            ctx.beginPath();
+            ctx.moveTo(x, startY);
+            ctx.lineTo(x, startY + rectHeight);
+            ctx.stroke();
+        }
+    } else if (tipoActual === 'cielo_suspendido') {
+        // Cuadrícula de perfiles principales y secundarios
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 1;
+        let pasoX = 1.2 * scale;
+        let pasoY = 0.6 * scale;
+
+        for (let x = startX; x <= startX + rectWidth; x += pasoX) {
+            ctx.beginPath();
+            ctx.moveTo(x, startY);
+            ctx.lineTo(x, startY + rectHeight);
+            ctx.stroke();
+        }
+        for (let y = startY; y <= startY + rectHeight; y += pasoY) {
+            ctx.beginPath();
+            ctx.moveTo(startX, y);
+            ctx.lineTo(startX + rectWidth, y);
+            ctx.stroke();
+        }
+    } else {
+        // Omegas y perfiles para cielo raso drywall
+        ctx.strokeStyle = '#0833a2';
+        ctx.lineWidth = 2;
+        let pasoOmega = 0.40 * scale;
+        for (let y = startY + pasoOmega; y < startY + rectHeight; y += pasoOmega) {
+            ctx.beginPath();
+            ctx.moveTo(startX, y);
+            ctx.lineTo(startX + rectWidth, y);
+            ctx.stroke();
+        }
+    }
+
+    // Marco exterior de la estructura
+    ctx.strokeStyle = '#001a40';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(startX, startY, rectWidth, rectHeight);
+
+    // Textos de acotación de medidas
+    ctx.fillStyle = '#001a40';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Largo: ${largo} m`, startX + (rectWidth / 2), startY + rectHeight + 22);
+
+    ctx.save();
+    ctx.translate(startX - 25, startY + (rectHeight / 2));
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`Alto: ${alto} m`, 0, 0);
+    ctx.restore();
 }
 
 function volverResultados() {
