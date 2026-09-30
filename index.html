@@ -73,7 +73,21 @@
                     </tbody>
                 </table>
             </div>
-            <button class="btn-calcular" style="margin-top: 20px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
+            
+            <!-- Botón para ver el esquema visual estructural -->
+            <button class="btn-esquema" onclick="verEsquemaVisual()">🔍 Ver Esquema Estructural</button>
+
+            <button class="btn-calcular" style="margin-top: 15px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
+        </div>
+
+        <!-- Sección del Esquema Visual (Oculto al inicio) -->
+        <div id="seccion-esquema" class="card hidden">
+            <button class="btn-volver" onclick="volverResultados()">⬅ Volver a resultados</button>
+            <h2 id="titulo-esquema">Esquema Estructural</h2>
+            <p class="subtitle">Guía visual de montaje y distribución:</p>
+            <div class="contenedor-imagen-esquema">
+                <img id="imagen-esquema" src="" alt="Esquema Estructural" class="img-esquema-estilo">
+            </div>
         </div>
     </div>
 
