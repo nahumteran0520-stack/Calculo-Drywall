@@ -70,11 +70,13 @@ function seleccionarModulo(tipo) {
 function volverMenu() {
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-esquema').classList.add('hidden');
     document.getElementById('seccion-menu').classList.remove('hidden');
 }
 
 function nuevoCalculo() {
     document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-esquema').classList.add('hidden');
     document.getElementById('seccion-calculo').classList.remove('hidden');
     document.getElementById('alto').value = '';
     document.getElementById('largo').value = '';
@@ -285,6 +287,32 @@ function generarResultados() {
 
     document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
     document.getElementById('seccion-calculo').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.remove('hidden');
+}
+
+// Funciones nuevas para el manejo de la visualización del esquema estructural
+function verEsquemaVisual() {
+    const imgEsquema = document.getElementById('imagen-esquema');
+    const tituloEsquema = document.getElementById('titulo-esquema');
+
+    // Asignar la imagen correspondiente según la categoría activa
+    if (tipoActual === 'pared') {
+        imgEsquema.src = 'pared.jpg';
+        tituloEsquema.innerText = 'Esquema: Paredes con Drywall';
+    } else if (tipoActual === 'cielo_suspendido') {
+        imgEsquema.src = 'cielo_suspendido.jpg';
+        tituloEsquema.innerText = 'Esquema: Cielo Raso Suspendido';
+    } else {
+        imgEsquema.src = 'cielo.jpg';
+        tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
+    }
+
+    document.getElementById('seccion-resultados').classList.add('hidden');
+    document.getElementById('seccion-esquema').classList.remove('hidden');
+}
+
+function volverResultados() {
+    document.getElementById('seccion-esquema').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
 
