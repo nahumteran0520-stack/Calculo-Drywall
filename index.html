@@ -75,7 +75,7 @@
             </div>
             
             <!-- Botón para ver el esquema estructural dinámico -->
-            <button class="btn-esquema" onclick="verEsquemaVisual()">📐 Ver Esquema Estructural Dinámico</button>
+            <button class="btn-esquema" onclick="verEsquemaVisual()">📐 Ver Esquema Estructural Detallado</button>
 
             <button class="btn-calcular" style="margin-top: 15px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
         </div>
@@ -84,9 +84,13 @@
         <div id="seccion-esquema" class="card hidden">
             <button class="btn-volver" onclick="volverResultados()">⬅ Volver a resultados</button>
             <h2 id="titulo-esquema">Esquema Estructural</h2>
-            <p class="subtitle">Simulación gráfica basada en las medidas ingresadas:</p>
+            <p class="subtitle">Distribución gráfica de perfiles según las medidas:</p>
             <div class="contenedor-canvas">
-                <canvas id="canvas-esquema" width="450" height="320"></canvas>
+                <canvas id="canvas-esquema" width="450" height="300"></canvas>
+                <!-- Leyenda de Materiales -->
+                <div id="leyenda-esquema" class="leyenda-container">
+                    <!-- Se llena dinámicamente según el tipo de proyecto -->
+                </div>
             </div>
         </div>
     </div>
