@@ -290,118 +290,139 @@ function generarResultados() {
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
 
-// Función que dibuja el esquema técnico de manera dinámica según las medidas
+// Función que dibuja el esquema técnico detallado con Riel, Paral y Omega
 function verEsquemaVisual() {
     const tituloEsquema = document.getElementById('titulo-esquema');
     const canvas = document.getElementById('canvas-esquema');
     const ctx = canvas.getContext('2d');
+    const leyendaContainer = document.getElementById('leyenda-esquema');
 
     const alto = parseFloat(document.getElementById('alto').value) || 2.5;
     const largo = parseFloat(document.getElementById('largo').value) || 3.0;
 
-    if (tipoActual === 'pared') {
-        tituloEsquema.innerText = 'Esquema Dinámico: Pared con Drywall';
-    } else if (tipoActual === 'cielo_suspendido') {
-        tituloEsquema.innerText = 'Esquema Dinámico: Cielo Raso Suspendido';
-    } else {
-        tituloEsquema.innerText = 'Esquema Dinámico: Cielo Raso Drywall';
-    }
-
     document.getElementById('seccion-resultados').classList.add('hidden');
     document.getElementById('seccion-esquema').classList.remove('hidden');
 
-    // Limpiar canvas anterior
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const padding = 50;
+    const padding = 45;
     const drawWidth = canvas.width - (padding * 2);
     const drawHeight = canvas.height - (padding * 2);
 
-    let scaleX = drawWidth / largo;
-    let scaleY = drawHeight / alto;
-    let scale = Math.min(scaleX, scaleY);
-
+    let scale = Math.min(drawWidth / largo, drawHeight / alto);
     const rectWidth = largo * scale;
     const rectHeight = alto * scale;
     const startX = (canvas.width - rectWidth) / 2;
     const startY = (canvas.height - rectHeight) / 2;
 
-    // Fondo blanco del área delimitada
+    // Fondo del área
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(startX, startY, rectWidth, rectHeight);
 
-    // Dibujo según el tipo de estructura
-    if (tipoActual === 'pared') {
-        // Rieles superior e inferior
-        ctx.strokeStyle = '#0833a2';
+    if (tipoActual === 'cielo') {
+        tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
+
+        // 1. OMEGAS a lo ancho (distancia 0.40m)
+        ctx.strokeStyle = '#2563eb'; // Azul claro/medio para Omega
+        ctx.lineWidth = 2;
+        let pasoOmega = 0.40 * scale;
+        for (let y = startY + pasoOmega; y < startY + rectHeight - 2; y += pasoOmega) {
+            ctx.beginPath();
+            ctx.moveTo(startX, y);
+            ctx.lineTo(startX + rectWidth, y);
+            ctx.stroke();
+        }
+
+        // 2. PARALES a lo largo (distancia 1.20m)
+        ctx.strokeStyle = '#d97706'; // Naranja para Paral
+        ctx.lineWidth = 3;
+        let pasoParal = 1.20 * scale;
+        for (let x = startX + pasoParal; x < startX + rectWidth - 2; x += pasoParal) {
+            ctx.beginPath();
+            ctx.moveTo(x, startY);
+            ctx.lineTo(x, startY + rectHeight);
+            ctx.stroke();
+        }
+
+        // 3. RIEL (Marco perimetral)
+        ctx.strokeStyle = '#001a40'; // Azul oscuro institucional para el Riel
+        ctx.lineWidth = 5;
+        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
+
+        // Leyenda para Cielo Drywall
+        leyendaContainer.innerHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Cada 1.20m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Cada 0.40m)</div>
+        `;
+
+    } else if (tipoActual === 'pared') {
+        tituloEsquema.innerText = 'Esquema: Pared con Drywall';
+
+        // Parales verticales (cada 0.61m)
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 3;
+        let pasoParalPared = 0.61 * scale;
+        for (let x = startX + pasoParalPared; x < startX + rectWidth - 2; x += pasoParalPared) {
+            ctx.beginPath();
+            ctx.moveTo(x, startY);
+            ctx.lineTo(x, startY + rectHeight);
+            ctx.stroke();
+        }
+
+        // Riel superior e inferior
+        ctx.strokeStyle = '#001a40';
         ctx.lineWidth = 6;
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(startX + rectWidth, startY);
-        ctx.stroke();
-
-        ctx.beginPath();
         ctx.moveTo(startX, startY + rectHeight);
         ctx.lineTo(startX + rectWidth, startY + rectHeight);
         ctx.stroke();
+        
+        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
 
-        // Parales verticales proporcionales (cada 0.61m simulados)
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = '#64748b';
-        let pasoParal = 0.61 * scale;
-        for (let x = startX + pasoParal; x < startX + rectWidth - 5; x += pasoParal) {
-            ctx.beginPath();
-            ctx.moveTo(x, startY);
-            ctx.lineTo(x, startY + rectHeight);
-            ctx.stroke();
-        }
-    } else if (tipoActual === 'cielo_suspendido') {
-        // Cuadrícula de perfiles principales y secundarios
-        ctx.strokeStyle = '#94a3b8';
-        ctx.lineWidth = 1;
-        let pasoX = 1.2 * scale;
-        let pasoY = 0.6 * scale;
+        leyendaContainer.innerHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical</div>
+        `;
 
-        for (let x = startX; x <= startX + rectWidth; x += pasoX) {
-            ctx.beginPath();
-            ctx.moveTo(x, startY);
-            ctx.lineTo(x, startY + rectHeight);
-            ctx.stroke();
-        }
-        for (let y = startY; y <= startY + rectHeight; y += pasoY) {
-            ctx.beginPath();
-            ctx.moveTo(startX, y);
-            ctx.lineTo(startX + rectWidth, y);
-            ctx.stroke();
-        }
     } else {
-        // Omegas y perfiles para cielo raso drywall
-        ctx.strokeStyle = '#0833a2';
-        ctx.lineWidth = 2;
-        let pasoOmega = 0.40 * scale;
-        for (let y = startY + pasoOmega; y < startY + rectHeight; y += pasoOmega) {
-            ctx.beginPath();
-            ctx.moveTo(startX, y);
-            ctx.lineTo(startX + rectWidth, y);
-            ctx.stroke();
+        tituloEsquema.innerText = 'Esquema: Cielo Raso Suspendido';
+
+        // Cuadrícula cuadriculada típica (1.20 x 0.60)
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.5;
+        let pX = 1.2 * scale;
+        let pY = 0.6 * scale;
+
+        for (let x = startX; x <= startX + rectWidth; x += pX) {
+            ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, startY + rectHeight); ctx.stroke();
         }
+        for (let y = startY; y <= startY + rectHeight; y += pY) {
+            ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(startX + rectWidth, y); ctx.stroke();
+        }
+
+        ctx.strokeStyle = '#001a40';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
+
+        leyendaContainer.innerHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Borde)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#64748b;"></span> Cuadrícula Principal/Secundaria</div>
+        `;
     }
 
-    // Marco exterior de la estructura
-    ctx.strokeStyle = '#001a40';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(startX, startY, rectWidth, rectHeight);
-
-    // Textos de acotación de medidas
+    // Acotaciones de medidas exteriores
     ctx.fillStyle = '#001a40';
-    ctx.font = 'bold 12px sans-serif';
+    ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`Largo: ${largo} m`, startX + (rectWidth / 2), startY + rectHeight + 22);
+    ctx.fillText(`Largo: ${largo} m`, startX + (rectWidth / 2), startY + rectHeight + 18);
 
     ctx.save();
-    ctx.translate(startX - 25, startY + (rectHeight / 2));
+    ctx.translate(startX - 22, startY + (rectHeight / 2));
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(`Alto: ${alto} m`, 0, 0);
+    ctx.fillText(`Ancho/Alto: ${alto} m`, 0, 0);
     ctx.restore();
 }
 
