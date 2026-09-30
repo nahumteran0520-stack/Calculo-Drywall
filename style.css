@@ -201,15 +201,14 @@ th {
     color: white;
 }
 
-/* Contenedor del Canvas para el esquema */
+/* Contenedor del Canvas y Leyenda */
 .contenedor-canvas {
     text-align: center;
     margin-top: 15px;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
-    padding: 10px;
+    padding: 12px;
     background-color: #f8fafc;
-    overflow-x: auto;
 }
 
 #canvas-esquema {
@@ -218,6 +217,30 @@ th {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
+}
+
+.leyenda-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--epa-azul-oscuro);
+}
+
+.leyenda-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.punto-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
 }
 
 @media (max-width: 480px) {
