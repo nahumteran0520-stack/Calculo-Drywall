@@ -157,6 +157,26 @@ input:focus {
     background-color: #e6b800;
 }
 
+/* Botón específico para el esquema visual */
+.btn-esquema {
+    background-color: var(--epa-azul);
+    color: white;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-esquema:hover {
+    background-color: #06267e;
+}
+
 .btn-volver {
     background-color: #64748b;
     color: white;
@@ -195,6 +215,24 @@ th, td {
 th {
     background-color: var(--epa-azul);
     color: white;
+}
+
+/* Contenedor de la Imagen del Esquema */
+.contenedor-imagen-esquema {
+    text-align: center;
+    margin-top: 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fafafa;
+}
+
+.img-esquema-estilo {
+    width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 6px;
+    display: block;
 }
 
 /* Adaptabilidad móvil */
