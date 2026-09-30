@@ -74,19 +74,19 @@
                 </table>
             </div>
             
-            <!-- Botón para ver el esquema visual estructural -->
-            <button class="btn-esquema" onclick="verEsquemaVisual()">🔍 Ver Esquema Estructural</button>
+            <!-- Botón para ver el esquema estructural dinámico -->
+            <button class="btn-esquema" onclick="verEsquemaVisual()">📐 Ver Esquema Estructural Dinámico</button>
 
             <button class="btn-calcular" style="margin-top: 15px;" onclick="nuevoCalculo()">Hacer otro cálculo</button>
         </div>
 
-        <!-- Sección del Esquema Visual (Oculto al inicio) -->
+        <!-- Sección del Esquema Dinámico (Oculto al inicio) -->
         <div id="seccion-esquema" class="card hidden">
             <button class="btn-volver" onclick="volverResultados()">⬅ Volver a resultados</button>
             <h2 id="titulo-esquema">Esquema Estructural</h2>
-            <p class="subtitle">Guía visual de montaje y distribución:</p>
-            <div class="contenedor-imagen-esquema">
-                <img id="imagen-esquema" src="" alt="Esquema Estructural" class="img-esquema-estilo">
+            <p class="subtitle">Simulación gráfica basada en las medidas ingresadas:</p>
+            <div class="contenedor-canvas">
+                <canvas id="canvas-esquema" width="450" height="320"></canvas>
             </div>
         </div>
     </div>
