@@ -2,6 +2,14 @@ const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHty
 let listaProductos = [];
 let tipoActual = '';
 
+// Variables globales para almacenar los últimos cálculos y usarlos en el esquema
+let ultimosCalculos = {
+    cantParal: 0,
+    cantOmega: 0,
+    cantRiel: 0,
+    cantLaminas: 0
+};
+
 async function obtenerPrecios() {
     try {
         const response = await fetch(urlCSV);
@@ -130,6 +138,8 @@ function generarResultados() {
         const cantLaminasSimple = laminasBase;
         const cantLaminasDobleCara = laminasBase * 2;
 
+        ultimosCalculos = { cantParal, cantOmega: 0, cantRiel, cantLaminas: cantLaminasSimple };
+
         const pLaminas = obtenerDatosProducto('3020002');
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
@@ -184,6 +194,8 @@ function generarResultados() {
         const cantPrincipal = Math.ceil(area * 0.23);
         const cantSecundario = Math.ceil(area * 1.37);
 
+        ultimosCalculos = { cantParal: cantPrincipal, cantOmega: cantSecundario, cantRiel: cantAngulo, cantLaminas };
+
         const pLam = obtenerDatosProducto('3015030');
         const pPrin = obtenerDatosProducto('3015002');
         const pSec = obtenerDatosProducto('3015004');
@@ -237,6 +249,8 @@ function generarResultados() {
         const cantRielCielo = Math.ceil(((anchoArea + largoArea) / largoPerfil) * 2);
         const cantParalCielo = Math.ceil((largoArea / largoPerfil) * (anchoArea / 1.20));
         const cantOmega = Math.ceil((anchoArea / largoPerfil) * (largoArea / 0.40));
+
+        ultimosCalculos = { cantParal: cantParalCielo, cantOmega: cantOmega, cantRiel: cantRielCielo, cantLaminas: cantLaminasCielo };
 
         const pLaminasC = obtenerDatosProducto('3020001');
         const pRielC = obtenerDatosProducto('3020100');
@@ -322,22 +336,35 @@ function verEsquemaVisual() {
    if (tipoActual === 'cielo') {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
 
-        // 1. PARALES a lo ancho (distancia 1.20m) - Líneas horizontales
+        const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 4;
+        const cantOmega = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 8;
+
+        // 1. PARALES (Líneas horizontales distribuidas uniformemente)
         ctx.strokeStyle = '#d97706'; 
         ctx.lineWidth = 3;
-        let pasoParal = 1.20 * scale;
-        for (let y = startY + pasoParal; y < startY + rectHeight - 2; y += pasoParal) {
+        for (let i = 0; i < cantParal; i++) {
+            let y;
+            if (cantParal === 1) {
+                y = startY + (rectHeight / 2);
+            } else {
+                y = startY + (i * (rectHeight / (cantParal - 1)));
+            }
             ctx.beginPath();
             ctx.moveTo(startX, y);
             ctx.lineTo(startX + rectWidth, y);
             ctx.stroke();
         }
 
-        // 2. OMEGAS a lo largo (distancia 0.40m) - Líneas verticales
+        // 2. OMEGAS (Líneas verticales distribuidas uniformemente)
         ctx.strokeStyle = '#2563eb'; 
         ctx.lineWidth = 2;
-        let pasoOmega = 0.40 * scale;
-        for (let x = startX + pasoOmega; x < startX + rectWidth - 2; x += pasoOmega) {
+        for (let i = 0; i < cantOmega; i++) {
+            let x;
+            if (cantOmega === 1) {
+                x = startX + (rectWidth / 2);
+            } else {
+                x = startX + (i * (rectWidth / (cantOmega - 1)));
+            }
             ctx.beginPath();
             ctx.moveTo(x, startY);
             ctx.lineTo(x, startY + rectHeight);
@@ -351,19 +378,16 @@ function verEsquemaVisual() {
 
         leyendaContainer.innerHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (A lo ancho / Cada 1.20m)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (A lo largo / Cada 0.40m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Total: ${cantOmega} unidades)</div>
         `;
 
     } else if (tipoActual === 'pared') {
         tituloEsquema.innerText = 'Esquema: Pared con Drywall';
 
-        // 1. Cálculo exacto de la cantidad de parales idéntico a generarResultados()
-        const distanciaParalesPared = alto > 3 ? 0.41 : 0.61;
-        const paralesBase = (largo / distanciaParalesPared) * (alto / 3.0);
-        const cantParal = Math.ceil(paralesBase + 2);
+        const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 6;
 
-        // 2. Dibujar parales distribuidos uniformemente de extremo a extremo
+        // Dibujar parales distribuidos uniformemente de extremo a extremo
         ctx.strokeStyle = '#d97706';
         ctx.lineWidth = 3;
         
