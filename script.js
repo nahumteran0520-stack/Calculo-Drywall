@@ -493,23 +493,34 @@ function exportarEsquemaPDF() {
     const canvas = document.getElementById('canvas-esquema');
     const titulo = document.getElementById('titulo-esquema').innerText;
     
-    // Obtenemos el HTML original de la leyenda
-    let leyendaHTML = document.getElementById('leyenda-esquema').innerHTML;
-    
-    // Asegurarnos de que el Riel también muestre la cantidad (ej. agregando "(Total: 2 unidades)" si no la tiene)
-    if (!leyendaHTML.includes("Riel Superior") && leyendaHTML.includes("Riel")) {
-        // Por si acaso cambia el texto exacto
+    // Obtener las cantidades exactas calculadas
+    const cantRielesFinal = ultimosCalculos.cantRiel > 0 ? ultimosCalculos.cantRiel : 2;
+    const cantParalesFinal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 0;
+    const cantOmegaFinal = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 0;
+
+    let leyendaHTML = '';
+
+    // Construir la leyenda limpia y sin duplicaciones según el tipo de proyecto
+    if (tipoActual === 'pared') {
+        leyendaHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior (Total: ${cantRielesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Total: ${cantParalesFinal} unidades)</div>
+        `;
+    } else if (tipoActual === 'cielo_suspendido') {
+        // Para cielo suspendido tomamos los valores numéricos correspondientes
+        leyendaHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Total: ${cantRielesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#64748b;"></span> Perfil Principal (Total: ${cantParalesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Perfil Secundario (Total: ${cantOmegaFinal} unidades)</div>
+        `;
+    } else {
+        // Cielo raso drywall
+        leyendaHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco) (Total: ${cantRielesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParalesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Total: ${cantOmegaFinal} unidades)</div>
+        `;
     }
-    // Reemplazamos de manera segura el texto del Riel para incluir la cantidad (por defecto 2 unidades para superior e inferior)
-    leyendaHTML = leyendaHTML.replace(
-        /Riel Superior e Inferior \(Marco\)/g, 
-        'Riel Superior e Inferior (Total: 2 unidades)'
-    );
-    // Si dice solo "Riel Superior e Inferior" sin paréntesis:
-    leyendaHTML = leyendaHTML.replace(
-        /Riel Superior e Inferior(?!<\/span>)/g, 
-        'Riel Superior e Inferior (Total: 2 unidades)'
-    );
 
     const imagenDataURL = canvas.toDataURL('image/png');
     const ventanaPDF = window.open('', '_blank');
