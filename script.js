@@ -358,11 +358,23 @@ function verEsquemaVisual() {
     } else if (tipoActual === 'pared') {
         tituloEsquema.innerText = 'Esquema: Pared con Drywall';
 
-        // Parales verticales (cada 0.61m)
+        // 1. Cálculo exacto de la cantidad de parales idéntico a generarResultados()
+        const distanciaParalesPared = alto > 3 ? 0.41 : 0.61;
+        const paralesBase = (largo / distanciaParalesPared) * (alto / 3.0);
+        const cantParal = Math.ceil(paralesBase + 2);
+
+        // 2. Dibujar parales distribuidos uniformemente de extremo a extremo
         ctx.strokeStyle = '#d97706';
         ctx.lineWidth = 3;
-        let pasoParalPared = 0.61 * scale;
-        for (let x = startX + pasoParalPared; x < startX + rectWidth - 2; x += pasoParalPared) {
+        
+        for (let i = 0; i < cantParal; i++) {
+            let x;
+            if (cantParal === 1) {
+                x = startX + (rectWidth / 2);
+            } else {
+                x = startX + (i * (rectWidth / (cantParal - 1)));
+            }
+
             ctx.beginPath();
             ctx.moveTo(x, startY);
             ctx.lineTo(x, startY + rectHeight);
@@ -391,7 +403,7 @@ function verEsquemaVisual() {
 
         leyendaContainer.innerHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior (Marco)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Cada 0.61m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Total: ${cantParal} unidades)</div>
         `;
 
     } else {
