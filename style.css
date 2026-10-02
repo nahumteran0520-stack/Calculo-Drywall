@@ -269,3 +269,26 @@ th {
 .btn-pdf:hover {
     background-color: #b91c1c;
 }
+.contenedor-botones-esquema {
+    display: flex;
+    justify-content: space-between; /* Los separa a los extremos */
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.btn-volver {
+    background-color: #4b5563; /* Gris elegante */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-volver:hover {
+    background-color: #374151;
+}
