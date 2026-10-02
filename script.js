@@ -492,12 +492,26 @@ function registrarUsoEnGoogleSheets(proyecto) {
 function exportarEsquemaPDF() {
     const canvas = document.getElementById('canvas-esquema');
     const titulo = document.getElementById('titulo-esquema').innerText;
-    const leyenda = document.getElementById('leyenda-esquema').innerHTML;
     
-    // Convertir el canvas a imagen base64
+    // Obtenemos el HTML original de la leyenda
+    let leyendaHTML = document.getElementById('leyenda-esquema').innerHTML;
+    
+    // Asegurarnos de que el Riel también muestre la cantidad (ej. agregando "(Total: 2 unidades)" si no la tiene)
+    if (!leyendaHTML.includes("Riel Superior") && leyendaHTML.includes("Riel")) {
+        // Por si acaso cambia el texto exacto
+    }
+    // Reemplazamos de manera segura el texto del Riel para incluir la cantidad (por defecto 2 unidades para superior e inferior)
+    leyendaHTML = leyendaHTML.replace(
+        /Riel Superior e Inferior \(Marco\)/g, 
+        'Riel Superior e Inferior (Total: 2 unidades)'
+    );
+    // Si dice solo "Riel Superior e Inferior" sin paréntesis:
+    leyendaHTML = leyendaHTML.replace(
+        /Riel Superior e Inferior(?!<\/span>)/g, 
+        'Riel Superior e Inferior (Total: 2 unidades)'
+    );
+
     const imagenDataURL = canvas.toDataURL('image/png');
-    
-    // Crear una ventana o pestaña emergente para la impresión limpia
     const ventanaPDF = window.open('', '_blank');
     
     ventanaPDF.document.write(`
@@ -567,14 +581,12 @@ function exportarEsquemaPDF() {
             </div>
 
             <div class="leyenda-container">
-                ${leyenda}
+                ${leyendaHTML}
             </div>
 
             <script>
                 window.onload = function() {
                     window.print();
-                    // Opcional: cerrar la ventana después de imprimir/guardar
-                    // window.close();
                 }
             </script>
         </body>
