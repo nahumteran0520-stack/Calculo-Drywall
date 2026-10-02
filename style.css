@@ -255,3 +255,17 @@ th {
         object-position: center;
     }
 }
+.btn-pdf {
+    background-color: #dc2626; /* Rojo elegante tipo PDF */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+}
+.btn-pdf:hover {
+    background-color: #b91c1c;
+}
