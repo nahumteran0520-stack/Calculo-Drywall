@@ -319,25 +319,25 @@ function verEsquemaVisual() {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(startX, startY, rectWidth, rectHeight);
 
-    if (tipoActual === 'cielo') {
+   if (tipoActual === 'cielo') {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
 
-        // 1. OMEGAS a lo ancho (distancia 0.40m) - Líneas horizontales
-        ctx.strokeStyle = '#2563eb'; 
-        ctx.lineWidth = 2;
-        let pasoOmega = 0.40 * scale;
-        for (let y = startY + pasoOmega; y < startY + rectHeight - 2; y += pasoOmega) {
+        // 1. PARALES a lo ancho (distancia 1.20m) - Líneas horizontales
+        ctx.strokeStyle = '#d97706'; 
+        ctx.lineWidth = 3;
+        let pasoParal = 1.20 * scale;
+        for (let y = startY + pasoParal; y < startY + rectHeight - 2; y += pasoParal) {
             ctx.beginPath();
             ctx.moveTo(startX, y);
             ctx.lineTo(startX + rectWidth, y);
             ctx.stroke();
         }
 
-        // 2. PARALES a lo largo (distancia 1.20m) - Líneas verticales
-        ctx.strokeStyle = '#d97706'; 
-        ctx.lineWidth = 3;
-        let pasoParal = 1.20 * scale;
-        for (let x = startX + pasoParal; x < startX + rectWidth - 2; x += pasoParal) {
+        // 2. OMEGAS a lo largo (distancia 0.40m) - Líneas verticales
+        ctx.strokeStyle = '#2563eb'; 
+        ctx.lineWidth = 2;
+        let pasoOmega = 0.40 * scale;
+        for (let x = startX + pasoOmega; x < startX + rectWidth - 2; x += pasoOmega) {
             ctx.beginPath();
             ctx.moveTo(x, startY);
             ctx.lineTo(x, startY + rectHeight);
@@ -351,8 +351,8 @@ function verEsquemaVisual() {
 
         leyendaContainer.innerHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (A lo largo / Cada 1.20m)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (A lo ancho / Cada 0.40m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (A lo ancho / Cada 1.20m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (A lo largo / Cada 0.40m)</div>
         `;
 
     } else if (tipoActual === 'pared') {
