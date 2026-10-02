@@ -489,3 +489,97 @@ function registrarUsoEnGoogleSheets(proyecto) {
     
     iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
 }
+function exportarEsquemaPDF() {
+    const canvas = document.getElementById('canvas-esquema');
+    const titulo = document.getElementById('titulo-esquema').innerText;
+    const leyenda = document.getElementById('leyenda-esquema').innerHTML;
+    
+    // Convertir el canvas a imagen base64
+    const imagenDataURL = canvas.toDataURL('image/png');
+    
+    // Crear una ventana o pestaña emergente para la impresión limpia
+    const ventanaPDF = window.open('', '_blank');
+    
+    ventanaPDF.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>${titulo}</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    color: #001a40;
+                    margin: 20px;
+                }
+                h2 {
+                    margin-bottom: 5px;
+                }
+                .subtitulo {
+                    font-size: 14px;
+                    color: #555;
+                    margin-bottom: 20px;
+                }
+                img {
+                    max-width: 100%;
+                    height: auto;
+                    border: 1px solid #ccc;
+                    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+                    margin-bottom: 20px;
+                }
+                .leyenda-container {
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    flex-wrap: wrap;
+                    margin-top: 15px;
+                }
+                .leyenda-item {
+                    display: flex;
+                    align-items: center;
+                    font-size: 13px;
+                    font-weight: bold;
+                }
+                .punto-color {
+                    width: 12px;
+                    height: 12px;
+                    display: inline-block;
+                    margin-right: 6px;
+                    border-radius: 2px;
+                }
+                @media print {
+                    body {
+                        margin: 0;
+                    }
+                    button {
+                        display: none;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <h2>${titulo}</h2>
+            <div class="subtitulo">Presupuesto y Distribución Técnica de Materiales</div>
+            
+            <div>
+                <img src="${imagenDataURL}" alt="Esquema Técnico Drywall">
+            </div>
+
+            <div class="leyenda-container">
+                ${leyenda}
+            </div>
+
+            <script>
+                window.onload = function() {
+                    window.print();
+                    // Opcional: cerrar la ventana después de imprimir/guardar
+                    // window.close();
+                }
+            </script>
+        </body>
+        </html>
+    `);
+    
+    ventanaPDF.document.close();
+}
