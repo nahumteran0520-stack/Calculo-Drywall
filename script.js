@@ -290,7 +290,7 @@ function generarResultados() {
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
 
-// Función que dibuja el esquema técnico detallado con Riel, Paral y Omega
+// Función que dibuja el esquema técnico grande y adaptado según el tipo de proyecto
 function verEsquemaVisual() {
     const tituloEsquema = document.getElementById('titulo-esquema');
     const canvas = document.getElementById('canvas-esquema');
@@ -305,7 +305,7 @@ function verEsquemaVisual() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const padding = 45;
+    const padding = 55;
     const drawWidth = canvas.width - (padding * 2);
     const drawHeight = canvas.height - (padding * 2);
 
@@ -322,8 +322,8 @@ function verEsquemaVisual() {
     if (tipoActual === 'cielo') {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
 
-        // 1. OMEGAS a lo ancho (distancia 0.40m)
-        ctx.strokeStyle = '#2563eb'; // Azul claro/medio para Omega
+        // 1. OMEGAS a lo ancho (distancia 0.40m) - Líneas horizontales
+        ctx.strokeStyle = '#2563eb'; 
         ctx.lineWidth = 2;
         let pasoOmega = 0.40 * scale;
         for (let y = startY + pasoOmega; y < startY + rectHeight - 2; y += pasoOmega) {
@@ -333,8 +333,8 @@ function verEsquemaVisual() {
             ctx.stroke();
         }
 
-        // 2. PARALES a lo largo (distancia 1.20m)
-        ctx.strokeStyle = '#d97706'; // Naranja para Paral
+        // 2. PARALES a lo largo (distancia 1.20m) - Líneas verticales
+        ctx.strokeStyle = '#d97706'; 
         ctx.lineWidth = 3;
         let pasoParal = 1.20 * scale;
         for (let x = startX + pasoParal; x < startX + rectWidth - 2; x += pasoParal) {
@@ -345,15 +345,14 @@ function verEsquemaVisual() {
         }
 
         // 3. RIEL (Marco perimetral)
-        ctx.strokeStyle = '#001a40'; // Azul oscuro institucional para el Riel
+        ctx.strokeStyle = '#001a40'; 
         ctx.lineWidth = 5;
         ctx.strokeRect(startX, startY, rectWidth, rectHeight);
 
-        // Leyenda para Cielo Drywall
         leyendaContainer.innerHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Cada 1.20m)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Cada 0.40m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (A lo largo / Cada 1.20m)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (A lo ancho / Cada 0.40m)</div>
         `;
 
     } else if (tipoActual === 'pared') {
@@ -370,21 +369,29 @@ function verEsquemaVisual() {
             ctx.stroke();
         }
 
-        // Riel superior e inferior
+        // Rieles arriba y abajo únicamente (a lo largo)
         ctx.strokeStyle = '#001a40';
         ctx.lineWidth = 6;
         ctx.beginPath();
+        // Riel Superior
         ctx.moveTo(startX, startY);
         ctx.lineTo(startX + rectWidth, startY);
+        // Riel Inferior
         ctx.moveTo(startX, startY + rectHeight);
         ctx.lineTo(startX + rectWidth, startY + rectHeight);
         ctx.stroke();
         
-        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
+        // Cierre lateral sutil del marco de referencia
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#94a3b8';
+        ctx.beginPath();
+        ctx.moveTo(startX, startY); ctx.lineTo(startX, startY + rectHeight);
+        ctx.moveTo(startX + rectWidth, startY); ctx.lineTo(startX + rectWidth, startY + rectHeight);
+        ctx.stroke();
 
         leyendaContainer.innerHTML = `
-            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior (Marco)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Cada 0.61m)</div>
         `;
 
     } else {
@@ -415,12 +422,12 @@ function verEsquemaVisual() {
 
     // Acotaciones de medidas exteriores
     ctx.fillStyle = '#001a40';
-    ctx.font = 'bold 11px sans-serif';
+    ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(`Largo: ${largo} m`, startX + (rectWidth / 2), startY + rectHeight + 18);
+    ctx.fillText(`Largo: ${largo} m`, startX + (rectWidth / 2), startY + rectHeight + 22);
 
     ctx.save();
-    ctx.translate(startX - 22, startY + (rectHeight / 2));
+    ctx.translate(startX - 28, startY + (rectHeight / 2));
     ctx.rotate(-Math.PI / 2);
     ctx.fillText(`Ancho/Alto: ${alto} m`, 0, 0);
     ctx.restore();
