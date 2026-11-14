@@ -2,7 +2,6 @@ const urlCSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS6bxAnT90xKGHty
 let listaProductos = [];
 let tipoActual = '';
 
-// Variables globales para almacenar los últimos cálculos y usarlos en el esquema
 let ultimosCalculos = {
     cantParal: 0,
     cantOmega: 0,
@@ -37,7 +36,7 @@ async function obtenerPrecios() {
             { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 23.9 },
             { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 24.9 },
             { codigo: '3015030', descripcion: 'LÁMINA DE YESO LISA 1,20X0,60', precio: 8.88 },
-            { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 12.8},
+            { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 12.8 },
             { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55 },
             { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16 },
             { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 7.00 },
@@ -45,7 +44,9 @@ async function obtenerPrecios() {
             { codigo: '3015002', descripcion: 'PERFIL PRINCIPAL BLANCO 3,66', precio: 7.25 },
             { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32 },
             { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59 },
-            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 }
+            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 },
+            { codigo: '185406', descripcion: 'TORNILLO DRYWALL ESTRUCTURAL 7X7/16 (75 UND)', precio: 3.50 },
+            { codigo: '1854068', descripcion: 'TORNILLO DRYWALL LAMINERO 6X1 C/PLANA (12 UND)', precio: 1.80 }
         ];
     }
 }
@@ -101,6 +102,7 @@ function calcularArea() {
 function generarResultados() {
     const alto = parseFloat(document.getElementById('alto').value);
     const largo = parseFloat(document.getElementById('largo').value);
+    const incluirTornillos = document.getElementById('incluir-tornillos') ? document.getElementById('incluir-tornillos').checked : true;
 
     if (!alto || !largo || alto <= 0 || largo <= 0) {
         alert('Por favor, ingresa valores válidos para las medidas.');
@@ -143,9 +145,61 @@ function generarResultados() {
         const pLaminas = obtenerDatosProducto('3020002');
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
+        
+        const pTornilloEst = obtenerDatosProducto('185406');
+        const pTornilloLam = obtenerDatosProducto('1854068');
 
-        const totalSimple = (cantLaminasSimple * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
-        const totalDoble = (cantLaminasDobleCara * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio);
+        // Fórmulas exactas indicadas
+        const cantPaqEstructural = Math.ceil((area * 15 * 1.1) / 75);
+        const cantPaqLamineroSimple = Math.ceil((area * 14 * 1.1) / 12);
+        const cantPaqLamineroDoble = Math.ceil((area * 2 * 14 * 1.1) / 12);
+
+        let subtotalTornillosSimple = 0;
+        let subtotalTornillosDoble = 0;
+        let htmlTornillosSimple = '';
+        let htmlTornillosDoble = '';
+
+        if (incluirTornillos) {
+            subtotalTornillosSimple = (cantPaqEstructural * pTornilloEst.precio) + (cantPaqLamineroSimple * pTornilloLam.precio);
+            subtotalTornillosDoble = (cantPaqEstructural * pTornilloEst.precio) + (cantPaqLamineroDoble * pTornilloLam.precio);
+
+            htmlTornillosSimple = `
+                <tr>
+                    <td><strong>Tornillo Estructural</strong></td>
+                    <td>185406</td>
+                    <td style="text-align: left;">${pTornilloEst.descripcion}</td>
+                    <td><strong>${cantPaqEstructural} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Tornillo Laminero</strong></td>
+                    <td>1854068</td>
+                    <td style="text-align: left;">${pTornilloLam.descripcion}</td>
+                    <td><strong>${cantPaqLamineroSimple} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                </tr>
+            `;
+
+            htmlTornillosDoble = `
+                <tr>
+                    <td><strong>Tornillo Estructural</strong></td>
+                    <td>185406</td>
+                    <td style="text-align: left;">${pTornilloEst.descripcion}</td>
+                    <td><strong>${cantPaqEstructural} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Tornillo Laminero (Doble)</strong></td>
+                    <td>1854068</td>
+                    <td style="text-align: left;">${pTornilloLam.descripcion}</td>
+                    <td><strong>${cantPaqLamineroDoble} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                </tr>
+            `;
+        }
+
+        const totalSimple = (cantLaminasSimple * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio) + subtotalTornillosSimple;
+        const totalDoble = (cantLaminasDobleCara * pLaminas.precio) + (cantRiel * pRiel.precio) + (cantParal * pParal.precio) + subtotalTornillosDoble;
 
         htmlTabla = `
             <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO NORMAL (Una sola cara)</td></tr>
@@ -161,15 +215,16 @@ function generarResultados() {
                 <td>3020106</td>
                 <td style="text-align: left;">${pRiel.descripcion}</td>
                 <td><strong>${cantRiel}</strong></td>
-                 <td style="width: 120px;">$${pRiel.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pRiel.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020108</td>
                 <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
                 <td><strong>${cantParal}</strong></td>
-                 <td style="width: 120px;">$${pParal.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pParal.precio.toFixed(2)}</td>
             </tr>
+            ${htmlTornillosSimple}
             <tr>
                 <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
                 <td><strong>$${totalSimple.toFixed(2)}</strong></td>
@@ -181,8 +236,9 @@ function generarResultados() {
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
                 <td><strong>${cantLaminasDobleCara}</strong></td>
-               <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
             </tr>
+            ${htmlTornillosDoble}
             <tr>
                 <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL (DOBLE CARA):</strong></td>
                 <td><strong>$${totalDoble.toFixed(2)}</strong></td>
@@ -211,7 +267,7 @@ function generarResultados() {
                 <td>3015030</td>
                 <td style="text-align: left;">${pLam.descripcion}</td>
                 <td><strong>${cantLaminas}</strong></td>
-                 <td style="width: 120px;">$${pLam.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pLam.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Principal</strong></td>
@@ -256,11 +312,40 @@ function generarResultados() {
         const pRielC = obtenerDatosProducto('3020100');
         const pParalC = obtenerDatosProducto('3020101');
         const pOmega = obtenerDatosProducto('3020102');
+        const pTornilloEst = obtenerDatosProducto('185406');
+        const pTornilloLam = obtenerDatosProducto('1854068');
+
+        const cantPaqEstructuralCielo = Math.ceil((area * 15 * 1.1) / 75);
+        const cantPaqLamineroCielo = Math.ceil((area * 14 * 1.1) / 12);
+
+        let subtotalTornillosCielo = 0;
+        let htmlTornillosCielo = '';
+
+        if (incluirTornillos) {
+            subtotalTornillosCielo = (cantPaqEstructuralCielo * pTornilloEst.precio) + (cantPaqLamineroCielo * pTornilloLam.precio);
+            htmlTornillosCielo = `
+                <tr>
+                    <td><strong>Tornillo Estructural</strong></td>
+                    <td>185406</td>
+                    <td style="text-align: left;">${pTornilloEst.descripcion}</td>
+                    <td><strong>${cantPaqEstructuralCielo} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Tornillo Laminero</strong></td>
+                    <td>1854068</td>
+                    <td style="text-align: left;">${pTornilloLam.descripcion}</td>
+                    <td><strong>${cantPaqLamineroCielo} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                </tr>
+            `;
+        }
 
         const totalCielo = (cantLaminasCielo * pLaminasC.precio) + 
                            (cantRielCielo * pRielC.precio) + 
                            (cantParalCielo * pParalC.precio) + 
-                           (cantOmega * pOmega.precio);
+                           (cantOmega * pOmega.precio) + 
+                           subtotalCielo;
 
         htmlTabla = `
             <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO DRYWALL</td></tr>
@@ -276,22 +361,23 @@ function generarResultados() {
                 <td>3020100</td>
                 <td style="text-align: left;">${pRielC.descripcion}</td>
                 <td><strong>${cantRielCielo}</strong></td>
-                 <td style="width: 120px;">$${pRielC.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pRielC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
                 <td><strong>${cantParalCielo}</strong></td>
-                 <td style="width: 120px;">$${pParalC.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pParalC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
                 <td>3020102</td>
                 <td style="text-align: left;">${pOmega.descripcion}</td>
                 <td><strong>${cantOmega}</strong></td>
-                 <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
+                <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
             </tr>
+            ${htmlTornillosCielo}
             <tr>
                 <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
                 <td><strong>$${totalCielo.toFixed(2)}</strong></td>
@@ -304,7 +390,6 @@ function generarResultados() {
     document.getElementById('seccion-resultados').classList.remove('hidden');
 }
 
-// Función que dibuja el esquema técnico grande y adaptado según el tipo de proyecto
 function verEsquemaVisual() {
     const tituloEsquema = document.getElementById('titulo-esquema');
     const canvas = document.getElementById('canvas-esquema');
@@ -329,49 +414,28 @@ function verEsquemaVisual() {
     const startX = (canvas.width - rectWidth) / 2;
     const startY = (canvas.height - rectHeight) / 2;
 
-    // Fondo del área
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(startX, startY, rectWidth, rectHeight);
 
    if (tipoActual === 'cielo') {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
-
         const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 4;
         const cantOmega = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 8;
 
-        // 1. PARALES (Líneas horizontales distribuidas uniformemente)
         ctx.strokeStyle = '#d97706'; 
         ctx.lineWidth = 3;
         for (let i = 0; i < cantParal; i++) {
-            let y;
-            if (cantParal === 1) {
-                y = startY + (rectHeight / 2);
-            } else {
-                y = startY + (i * (rectHeight / (cantParal - 1)));
-            }
-            ctx.beginPath();
-            ctx.moveTo(startX, y);
-            ctx.lineTo(startX + rectWidth, y);
-            ctx.stroke();
+            let y = cantParal === 1 ? startY + (rectHeight / 2) : startY + (i * (rectHeight / (cantParal - 1)));
+            ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(startX + rectWidth, y); ctx.stroke();
         }
 
-        // 2. OMEGAS (Líneas verticales distribuidas uniformemente)
         ctx.strokeStyle = '#2563eb'; 
         ctx.lineWidth = 2;
         for (let i = 0; i < cantOmega; i++) {
-            let x;
-            if (cantOmega === 1) {
-                x = startX + (rectWidth / 2);
-            } else {
-                x = startX + (i * (rectWidth / (cantOmega - 1)));
-            }
-            ctx.beginPath();
-            ctx.moveTo(x, startY);
-            ctx.lineTo(x, startY + rectHeight);
-            ctx.stroke();
+            let x = cantOmega === 1 ? startX + (rectWidth / 2) : startX + (i * (rectWidth / (cantOmega - 1)));
+            ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, startY + rectHeight); ctx.stroke();
         }
 
-        // 3. RIEL (Marco perimetral)
         ctx.strokeStyle = '#001a40'; 
         ctx.lineWidth = 5;
         ctx.strokeRect(startX, startY, rectWidth, rectHeight);
@@ -384,40 +448,22 @@ function verEsquemaVisual() {
 
     } else if (tipoActual === 'pared') {
         tituloEsquema.innerText = 'Esquema: Pared con Drywall';
-
         const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 6;
 
-        // Dibujar parales distribuidos uniformemente de extremo a extremo
         ctx.strokeStyle = '#d97706';
         ctx.lineWidth = 3;
-        
         for (let i = 0; i < cantParal; i++) {
-            let x;
-            if (cantParal === 1) {
-                x = startX + (rectWidth / 2);
-            } else {
-                x = startX + (i * (rectWidth / (cantParal - 1)));
-            }
-
-            ctx.beginPath();
-            ctx.moveTo(x, startY);
-            ctx.lineTo(x, startY + rectHeight);
-            ctx.stroke();
+            let x = cantParal === 1 ? startX + (rectWidth / 2) : startX + (i * (rectWidth / (cantParal - 1)));
+            ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, startY + rectHeight); ctx.stroke();
         }
 
-        // Rieles arriba y abajo únicamente (a lo largo)
         ctx.strokeStyle = '#001a40';
         ctx.lineWidth = 6;
         ctx.beginPath();
-        // Riel Superior
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(startX + rectWidth, startY);
-        // Riel Inferior
-        ctx.moveTo(startX, startY + rectHeight);
-        ctx.lineTo(startX + rectWidth, startY + rectHeight);
+        ctx.moveTo(startX, startY); ctx.lineTo(startX + rectWidth, startY);
+        ctx.moveTo(startX, startY + rectHeight); ctx.lineTo(startX + rectWidth, startY + rectHeight);
         ctx.stroke();
         
-        // Cierre lateral sutil del marco de referencia
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#94a3b8';
         ctx.beginPath();
@@ -432,8 +478,6 @@ function verEsquemaVisual() {
 
     } else {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Suspendido';
-
-        // Cuadrícula cuadriculada típica (1.20 x 0.60)
         ctx.strokeStyle = '#64748b';
         ctx.lineWidth = 1.5;
         let pX = 1.2 * scale;
@@ -456,7 +500,6 @@ function verEsquemaVisual() {
         `;
     }
 
-    // Acotaciones de medidas exteriores
     ctx.fillStyle = '#001a40';
     ctx.font = 'bold 12px sans-serif';
     ctx.textAlign = 'center';
@@ -476,7 +519,6 @@ function volverResultados() {
 
 function registrarUsoEnGoogleSheets(proyecto) {
     const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec";
-    
     const iframeId = 'hidden-sheet-iframe';
     let iframe = document.getElementById(iframeId);
     
@@ -489,32 +531,29 @@ function registrarUsoEnGoogleSheets(proyecto) {
     
     iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
 }
+
 function exportarEsquemaPDF() {
     const canvas = document.getElementById('canvas-esquema');
     const titulo = document.getElementById('titulo-esquema').innerText;
     
-    // Obtener las cantidades exactas calculadas
     const cantRielesFinal = ultimosCalculos.cantRiel > 0 ? ultimosCalculos.cantRiel : 2;
     const cantParalesFinal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 0;
     const cantOmegaFinal = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 0;
 
     let leyendaHTML = '';
 
-    // Construir la leyenda limpia y sin duplicaciones según el tipo de proyecto
     if (tipoActual === 'pared') {
         leyendaHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel Superior e Inferior (Total: ${cantRielesFinal} unidades)</div>
             <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Total: ${cantParalesFinal} unidades)</div>
         `;
     } else if (tipoActual === 'cielo_suspendido') {
-        // Para cielo suspendido tomamos los valores numéricos correspondientes
         leyendaHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Total: ${cantRielesFinal} unidades)</div>
             <div class="leyenda-item"><span class="punto-color" style="background:#64748b;"></span> Perfil Principal (Total: ${cantParalesFinal} unidades)</div>
             <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Perfil Secundario (Total: ${cantOmegaFinal} unidades)</div>
         `;
     } else {
-        // Cielo raso drywall
         leyendaHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco) (Total: ${cantRielesFinal} unidades)</div>
             <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParalesFinal} unidades)</div>
@@ -532,78 +571,25 @@ function exportarEsquemaPDF() {
             <meta charset="UTF-8">
             <title>${titulo}</title>
             <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    text-align: center;
-                    color: #001a40;
-                    margin: 20px;
-                }
-                h2 {
-                    margin-bottom: 5px;
-                }
-                .subtitulo {
-                    font-size: 14px;
-                    color: #555;
-                    margin-bottom: 20px;
-                }
-                img {
-                    max-width: 100%;
-                    height: auto;
-                    border: 1px solid #ccc;
-                    box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-                    margin-bottom: 20px;
-                }
-                .leyenda-container {
-                    display: flex;
-                    justify-content: center;
-                    gap: 20px;
-                    flex-wrap: wrap;
-                    margin-top: 15px;
-                }
-                .leyenda-item {
-                    display: flex;
-                    align-items: center;
-                    font-size: 13px;
-                    font-weight: bold;
-                }
-                .punto-color {
-                    width: 12px;
-                    height: 12px;
-                    display: inline-block;
-                    margin-right: 6px;
-                    border-radius: 2px;
-                }
-                @media print {
-                    body {
-                        margin: 0;
-                    }
-                    button {
-                        display: none;
-                    }
-                }
+                body { font-family: Arial, sans-serif; text-align: center; color: #001a40; margin: 20px; }
+                h2 { margin-bottom: 5px; }
+                .subtitulo { font-size: 14px; color: #555; margin-bottom: 20px; }
+                img { max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+                .leyenda-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
+                .leyenda-item { display: flex; align-items: center; font-size: 13px; font-weight: bold; }
+                .punto-color { width: 12px; height: 12px; display: inline-block; margin-right: 6px; border-radius: 2px; }
+                @media print { body { margin: 0; } button { display: none; } }
             </style>
         </head>
         <body>
             <h2>${titulo}</h2>
             <div class="subtitulo">Presupuesto y Distribución Técnica de Materiales</div>
-            
-            <div>
-                <img src="${imagenDataURL}" alt="Esquema Técnico Drywall">
-            </div>
-
-            <div class="leyenda-container">
-                ${leyendaHTML}
-            </div>
-
-            <script>
-                window.onload = function() {
-                    window.print();
-                }
-            </script>
+            <div><img src="${imagenDataURL}" alt="Esquema Técnico Drywall"></div>
+            <div class="leyenda-container">${leyendaHTML}</div>
+            <script>window.onload = function() { window.print(); }</script>
         </body>
         </html>
     `);
     
     ventanaPDF.document.close();
 }
-
