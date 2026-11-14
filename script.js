@@ -606,3 +606,4 @@ function exportarEsquemaPDF() {
     
     ventanaPDF.document.close();
 }
+
