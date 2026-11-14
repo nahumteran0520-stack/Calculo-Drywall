@@ -45,8 +45,8 @@ async function obtenerPrecios() {
             { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32 },
             { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59 },
             { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 },
-            { codigo: '185406', descripcion: 'TORNILLO DRYWALL ESTRUCTURAL 7X7/16 (75 UND)', precio: 3.50 },
-            { codigo: '1854068', descripcion: 'TORNILLO DRYWALL LAMINERO 6X1 C/PLANA (12 UND)', precio: 1.80 }
+            { codigo: '1854067', descripcion: 'TORNILLO DRYWALL ESTRUCTURAL 7X7/16 (75 UND)', precio: 1.96 },
+            { codigo: '1854068', descripcion: 'TORNILLO DRYWALL LAMINERO 6X1 C/PLANA (12 UND)', precio: 0.98 }
         ];
     }
 }
