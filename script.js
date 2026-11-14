@@ -146,10 +146,9 @@ function generarResultados() {
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
         
-        const pTornilloEst = obtenerDatosProducto('185406');
+        const pTornilloEst = obtenerDatosProducto('1854067');
         const pTornilloLam = obtenerDatosProducto('1854068');
 
-        // Fórmulas exactas indicadas
         const cantPaqEstructural = Math.ceil((area * 15 * 1.1) / 75);
         const cantPaqLamineroSimple = Math.ceil((area * 14 * 1.1) / 12);
         const cantPaqLamineroDoble = Math.ceil((area * 2 * 14 * 1.1) / 12);
@@ -166,7 +165,7 @@ function generarResultados() {
             htmlTornillosSimple = `
                 <tr>
                     <td><strong>Tornillo Estructural</strong></td>
-                    <td>185406</td>
+                    <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
                     <td><strong>${cantPaqEstructural} paq</strong></td>
                     <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
@@ -183,7 +182,7 @@ function generarResultados() {
             htmlTornillosDoble = `
                 <tr>
                     <td><strong>Tornillo Estructural</strong></td>
-                    <td>185406</td>
+                    <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
                     <td><strong>${cantPaqEstructural} paq</strong></td>
                     <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
@@ -296,6 +295,7 @@ function generarResultados() {
             </tr>
         `;
     } else {
+        // Cielo Raso Drywall
         const anchoArea = alto; 
         const largoArea = largo;
         const rendimientoLamina = 2.976;
@@ -312,7 +312,7 @@ function generarResultados() {
         const pRielC = obtenerDatosProducto('3020100');
         const pParalC = obtenerDatosProducto('3020101');
         const pOmega = obtenerDatosProducto('3020102');
-        const pTornilloEst = obtenerDatosProducto('185406');
+        const pTornilloEst = obtenerDatosProducto('1854067');
         const pTornilloLam = obtenerDatosProducto('1854068');
 
         const cantPaqEstructuralCielo = Math.ceil((area * 15 * 1.1) / 75);
@@ -326,7 +326,7 @@ function generarResultados() {
             htmlTornillosCielo = `
                 <tr>
                     <td><strong>Tornillo Estructural</strong></td>
-                    <td>185406</td>
+                    <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
                     <td><strong>${cantPaqEstructuralCielo} paq</strong></td>
                     <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
@@ -385,6 +385,17 @@ function generarResultados() {
         `;
     }
 
+    // Nota comercial agregada al final de la tabla
+    htmlTabla += `
+        <tr>
+            <td colspan="5">
+                <div class="nota-asesor">
+                    💡 <strong>¡Importante!</strong> Consulta con el asesor la disponibilidad en inventario para procesar tu compra.
+                </div>
+            </td>
+        </tr>
+    `;
+
     document.getElementById('tabla-cuerpo').innerHTML = htmlTabla;
     document.getElementById('seccion-calculo').classList.add('hidden');
     document.getElementById('seccion-resultados').classList.remove('hidden');
@@ -417,36 +428,7 @@ function verEsquemaVisual() {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(startX, startY, rectWidth, rectHeight);
 
-   if (tipoActual === 'cielo') {
-        tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
-        const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 4;
-        const cantOmega = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 8;
-
-        ctx.strokeStyle = '#d97706'; 
-        ctx.lineWidth = 3;
-        for (let i = 0; i < cantParal; i++) {
-            let y = cantParal === 1 ? startY + (rectHeight / 2) : startY + (i * (rectHeight / (cantParal - 1)));
-            ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(startX + rectWidth, y); ctx.stroke();
-        }
-
-        ctx.strokeStyle = '#2563eb'; 
-        ctx.lineWidth = 2;
-        for (let i = 0; i < cantOmega; i++) {
-            let x = cantOmega === 1 ? startX + (rectWidth / 2) : startX + (i * (rectWidth / (cantOmega - 1)));
-            ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, startY + rectHeight); ctx.stroke();
-        }
-
-        ctx.strokeStyle = '#001a40'; 
-        ctx.lineWidth = 5;
-        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
-
-        leyendaContainer.innerHTML = `
-            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParal} unidades)</div>
-            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Total: ${cantOmega} unidades)</div>
-        `;
-
-    } else if (tipoActual === 'pared') {
+   if (tipoActual === 'pared') {
         tituloEsquema.innerText = 'Esquema: Pared con Drywall';
         const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 6;
 
@@ -476,7 +458,7 @@ function verEsquemaVisual() {
             <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral Vertical (Total: ${cantParal} unidades)</div>
         `;
 
-    } else {
+    } else if (tipoActual === 'cielo_suspendido') {
         tituloEsquema.innerText = 'Esquema: Cielo Raso Suspendido';
         ctx.strokeStyle = '#64748b';
         ctx.lineWidth = 1.5;
@@ -497,6 +479,36 @@ function verEsquemaVisual() {
         leyendaContainer.innerHTML = `
             <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Borde)</div>
             <div class="leyenda-item"><span class="punto-color" style="background:#64748b;"></span> Cuadrícula Principal/Secundaria</div>
+        `;
+
+    } else {
+        // Cielo Raso Drywall (protegido para cualquier variante de nombre)
+        tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
+        const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 4;
+        const cantOmega = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 8;
+
+        ctx.strokeStyle = '#d97706'; 
+        ctx.lineWidth = 3;
+        for (let i = 0; i < cantParal; i++) {
+            let y = cantParal === 1 ? startY + (rectHeight / 2) : startY + (i * (rectHeight / (cantParal - 1)));
+            ctx.beginPath(); ctx.moveTo(startX, y); ctx.lineTo(startX + rectWidth, y); ctx.stroke();
+        }
+
+        ctx.strokeStyle = '#2563eb'; 
+        ctx.lineWidth = 2;
+        for (let i = 0; i < cantOmega; i++) {
+            let x = cantOmega === 1 ? startX + (rectWidth / 2) : startX + (i * (rectWidth / (cantOmega - 1)));
+            ctx.beginPath(); ctx.moveTo(x, startY); ctx.lineTo(x, startY + rectHeight); ctx.stroke();
+        }
+
+        ctx.strokeStyle = '#001a40'; 
+        ctx.lineWidth = 5;
+        ctx.strokeRect(startX, startY, rectWidth, rectHeight);
+
+        leyendaContainer.innerHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Total: ${cantOmega} unidades)</div>
         `;
     }
 
