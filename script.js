@@ -9,45 +9,56 @@ let ultimosCalculos = {
     cantLaminas: 0
 };
 
+const respaldoProductos = [
+    { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 23.9 },
+    { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 24.9 },
+    { codigo: '3015030', descripcion: 'LÁMINA DE YESO LISA 1,20X0,60', precio: 8.88 },
+    { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 12.8 },
+    { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55 },
+    { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16 },
+    { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 7.00 },
+    { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 8.23 },
+    { codigo: '3015002', descripcion: 'PERFIL PRINCIPAL BLANCO 3,66', precio: 7.25 },
+    { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32 },
+    { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59 },
+    { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 },
+    { codigo: '1854067', descripcion: 'TORNILLO DRYWALL ESTRUCTURAL 7X7/16 (75 UND)', precio: 1.96 },
+    { codigo: '1854068', descripcion: 'TORNILLO DRYWALL LAMINERO 6X1 C/PLANA (12 UND)', precio: 0.98 }
+];
+
 async function obtenerPrecios() {
     try {
         const response = await fetch(urlCSV);
         if (!response.ok) throw new Error('Error al conectar');
         const data = await response.text();
         
-        const lineas = data.split('\n');
-        listaProductos = lineas.slice(1).map(linea => {
-            const columnas = linea.split(',').map(c => c.trim().replace(/"/g, ''));
-            if (columnas.length >= 4) {
-                return {
-                    codigo: columnas[0],
-                    descripcion: columnas[1],
-                    precio: parseFloat(columnas[2].replace(',', '.')) || 0,
-                    existencia: parseInt(columnas[3]) || 0
-                };
-            }
-            return null;
-        }).filter(p => p !== null && p.codigo);
+        const lineas = data.split(/\r?\n/);
+        const productosCargados = [];
 
-        if (listaProductos.length === 0) throw new Error("Datos vacíos");
+        lineas.forEach(linea => {
+            // Separa respetando comillas (por si los precios tienen coma decimal como "1,96")
+            const columnas = linea.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.trim().replace(/^"|"$/g, ''));
+            // Busca la celda que contenga un código numérico de 6 a 8 dígitos
+            const idxCodigo = columnas.findIndex(c => /^\d{6,8}$/.test(c));
+            
+            if (idxCodigo !== -1 && columnas.length > idxCodigo + 2) {
+                const codigo = columnas[idxCodigo];
+                const descripcion = columnas[idxCodigo + 1];
+                const precioStr = columnas[idxCodigo + 2].replace(',', '.');
+                const precio = parseFloat(precioStr) || 0;
+
+                productosCargados.push({ codigo, descripcion, precio });
+            }
+        });
+
+        if (productosCargados.length > 0) {
+            listaProductos = productosCargados;
+        } else {
+            throw new Error("No se detectaron códigos válidos en el CSV");
+        }
     } catch (error) {
-        console.warn("Usando respaldo actualizado:", error);
-        listaProductos = [
-            { codigo: '3020001', descripcion: 'LÁMINA DE YESO 3/8" 1,22M X 2', precio: 23.9 },
-            { codigo: '3020002', descripcion: 'LÁMINA DE YESO 1/2" 1,22 X 2,4', precio: 24.9 },
-            { codigo: '3015030', descripcion: 'LÁMINA DE YESO LISA 1,20X0,60', precio: 8.88 },
-            { codigo: '3015037', descripcion: 'LÁMINA YESO CONCHA NARANJA 120', precio: 12.8 },
-            { codigo: '3020100', descripcion: 'RIEL 1 5/8" X 3.05M ACERO GALV', precio: 5.55 },
-            { codigo: '3020101', descripcion: 'PARAL 1 5/8" X 3.05M ACERO GAL', precio: 7.16 },
-            { codigo: '3020106', descripcion: 'RIEL 2 1/2" X 3,05M ACERO GALV', precio: 7.00 },
-            { codigo: '3020108', descripcion: 'PARAL 2 1/2" X 3.05M ACERO GAL', precio: 8.23 },
-            { codigo: '3015002', descripcion: 'PERFIL PRINCIPAL BLANCO 3,66', precio: 7.25 },
-            { codigo: '3015004', descripcion: 'PERFIL SECUNDARIO BLANCO 1.20M', precio: 2.32 },
-            { codigo: '3015008', descripcion: 'PERFIL ANGULO BLANCO 300 CM', precio: 3.59 },
-            { codigo: '3020102', descripcion: 'PERFIL OMEGA 3,05M ACERO GALVA', precio: 6.44 },
-            { codigo: '1854067', descripcion: 'TORNILLO DRYWALL ESTRUCTURAL 7X7/16 (75 UND)', precio: 1.96 },
-            { codigo: '1854068', descripcion: 'TORNILLO DRYWALL LAMINERO 6X1 C/PLANA (12 UND)', precio: 0.98 }
-        ];
+        console.warn("Usando respaldo local:", error);
+        listaProductos = [...respaldoProductos];
     }
 }
 
@@ -63,16 +74,15 @@ function seleccionarModulo(tipo) {
 
     if (tipo === 'pared') {
         document.getElementById('titulo-modulo').innerText = 'Paredes con Drywall';
-        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Alto';
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Alto (m)';
         if (contenedorTornillos) contenedorTornillos.style.display = 'flex';
     } else if (tipo === 'cielo_suspendido') {
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Suspendido (1.20x0.60)';
-        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho';
-        if (contenedorTornillos) contenedorTornillos.style.display = 'none'; // Ocultar tornillos en cielo suspendido
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho (m)';
+        if (contenedorTornillos) contenedorTornillos.style.display = 'none';
     } else {
-        // Cielo Raso Drywall
         document.getElementById('titulo-modulo').innerText = 'Cielo Raso Drywall';
-        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho';
+        if (etiquetaMedida1) etiquetaMedida1.innerText = 'Ancho (m)';
         if (contenedorTornillos) contenedorTornillos.style.display = 'flex';
     }
     
@@ -107,7 +117,8 @@ function calcularArea() {
 function generarResultados() {
     const alto = parseFloat(document.getElementById('alto').value);
     const largo = parseFloat(document.getElementById('largo').value);
-    const incluirTornillos = (tipoActual !== 'cielo_suspendido') && document.getElementById('incluir-tornillos') && document.getElementById('incluir-tornillos').checked;
+    const checkTornillos = document.getElementById('incluir-tornillos');
+    const incluirTornillos = (tipoActual !== 'cielo_suspendido') && checkTornillos && checkTornillos.checked;
 
     if (!alto || !largo || alto <= 0 || largo <= 0) {
         alert('Por favor, ingresa valores válidos para las medidas.');
@@ -128,7 +139,10 @@ function generarResultados() {
     let htmlTabla = '';
 
     function obtenerDatosProducto(codigoBuscado) {
-        const prod = listaProductos.find(p => p.codigo === codigoBuscado);
+        let prod = listaProductos.find(p => p.codigo === codigoBuscado);
+        if (!prod) {
+            prod = respaldoProductos.find(p => p.codigo === codigoBuscado);
+        }
         return prod ? prod : { precio: 0, descripcion: "Artículo no disponible" };
     }
 
@@ -150,7 +164,6 @@ function generarResultados() {
         const pLaminas = obtenerDatosProducto('3020002');
         const pRiel = obtenerDatosProducto('3020106');
         const pParal = obtenerDatosProducto('3020108');
-        
         const pTornilloEst = obtenerDatosProducto('1854067');
         const pTornilloLam = obtenerDatosProducto('1854068');
 
@@ -172,13 +185,15 @@ function generarResultados() {
                     <td><strong>Tornillo Estructural</strong></td>
                     <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
-                    <td><strong>${cantPaqEstructural} paq</strong></td> <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqEstructural} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <td><strong>Tornillo Laminero</strong></td>
                     <td>1854068</td>
                     <td style="text-align: left;">${pTornilloLam.descripcion}</td>
-                    <td><strong>${cantPaqLamineroSimple} paq</strong></td> <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqLamineroSimple} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
                 </tr>
             `;
 
@@ -187,13 +202,15 @@ function generarResultados() {
                     <td><strong>Tornillo Estructural</strong></td>
                     <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
-                    <td><strong>${cantPaqEstructural} paq</strong></td> <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqEstructural} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <td><strong>Tornillo Laminero (Doble)</strong></td>
                     <td>1854068</td>
                     <td style="text-align: left;">${pTornilloLam.descripcion}</td>
-                    <td><strong>${cantPaqLamineroDoble} paq</strong></td> <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqLamineroDoble} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
                 </tr>
             `;
         }
@@ -207,21 +224,27 @@ function generarResultados() {
                 <td><strong>Laminas</strong></td>
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
-                <td><strong>${cantLaminasSimple}</strong></td> <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
+                <td><strong>${cantLaminasSimple}</strong></td>
+                <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
                 <td>3020106</td>
                 <td style="text-align: left;">${pRiel.descripcion}</td>
-                <td><strong>${cantRiel}</strong></td> <td style="width: 120px;">$${pRiel.precio.toFixed(2)}</td>
+                <td><strong>${cantRiel}</strong></td>
+                <td style="width: 120px;">$${pRiel.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020108</td>
-                <td style="text-align: left;">${pParal.descripcion} (Sep:${distanciaParales}m)</td>
-                <td><strong>${cantParal}</strong></td> <td style="width: 120px;">$${pParal.precio.toFixed(2)}</td>
+                <td style="text-align: left;">${pParal.descripcion} (Sep: ${distanciaParales}m)</td>
+                <td><strong>${cantParal}</strong></td>
+                <td style="width: 120px;">$${pParal.precio.toFixed(2)}</td>
             </tr>
-            ${htmlTornillosSimple} <tr> <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td> <td><strong>$${totalSimple.toFixed(2)}</strong></td>
+            ${htmlTornillosSimple}
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td><strong>$${totalSimple.toFixed(2)}</strong></td>
             </tr>
 
             <tr><td colspan="5" style="background-color: #cbd5e1; font-weight: bold; color: #1a4472;">CÁLCULO POR AMBOS LADOS (Doble cara)</td></tr>
@@ -229,9 +252,13 @@ function generarResultados() {
                 <td><strong>Laminas (Doble)</strong></td>
                 <td>3020002</td>
                 <td style="text-align: left;">${pLaminas.descripcion}</td>
-                <td><strong>${cantLaminasDobleCara}</strong></td> <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
+                <td><strong>${cantLaminasDobleCara}</strong></td>
+                <td style="width: 120px;">$${pLaminas.precio.toFixed(2)}</td>
             </tr>
-            ${htmlTornillosDoble} <tr> <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL (DOBLE CARA):</strong></td> <td><strong>$${totalDoble.toFixed(2)}</strong></td>
+            ${htmlTornillosDoble}
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL (DOBLE CARA):</strong></td>
+                <td><strong>$${totalDoble.toFixed(2)}</strong></td>
             </tr>
         `;
     } else if (tipoActual === 'cielo_suspendido') {
@@ -256,26 +283,33 @@ function generarResultados() {
                 <td><strong>Laminas</strong></td>
                 <td>3015030</td>
                 <td style="text-align: left;">${pLam.descripcion}</td>
-                <td><strong>${cantLaminas}</strong></td> <td style="width: 120px;">$${pLam.precio.toFixed(2)}</td>
+                <td><strong>${cantLaminas}</strong></td>
+                <td style="width: 120px;">$${pLam.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Principal</strong></td>
                 <td>3015002</td>
                 <td style="text-align: left;">${pPrin.descripcion}</td>
-                <td><strong>${cantPrincipal}</strong></td> <td style="width: 120px;">$${pPrin.precio.toFixed(2)}</td>
+                <td><strong>${cantPrincipal}</strong></td>
+                <td style="width: 120px;">$${pPrin.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Secundario</strong></td>
                 <td>3015004</td>
                 <td style="text-align: left;">${pSec.descripcion}</td>
-                <td><strong>${cantSecundario}</strong></td> <td style="width: 120px;">$${pSec.precio.toFixed(2)}</td>
+                <td><strong>${cantSecundario}</strong></td>
+                <td style="width: 120px;">$${pSec.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Perfil Ángulo</strong></td>
                 <td>3015008</td>
                 <td style="text-align: left;">${pAng.descripcion}</td>
                 <td><strong>${cantAngulo}</strong></td>
-                <td style="width: 120px;">$${pAng.precio.toFixed(2)}</td> </tr> <tr> <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td> <td><strong>$${total.toFixed(2)}</strong></td>
+                <td style="width: 120px;">$${pAng.precio.toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td><strong>$${total.toFixed(2)}</strong></td>
             </tr>
         `;
     } else {
@@ -312,13 +346,15 @@ function generarResultados() {
                     <td><strong>Tornillo Estructural</strong></td>
                     <td>1854067</td>
                     <td style="text-align: left;">${pTornilloEst.descripcion}</td>
-                    <td><strong>${cantPaqEstructuralCielo} paq</strong></td> <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqEstructuralCielo} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloEst.precio.toFixed(2)}</td>
                 </tr>
                 <tr>
                     <td><strong>Tornillo Laminero</strong></td>
                     <td>1854068</td>
                     <td style="text-align: left;">${pTornilloLam.descripcion}</td>
-                    <td><strong>${cantPaqLamineroCielo} paq</strong></td> <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
+                    <td><strong>${cantPaqLamineroCielo} paq</strong></td>
+                    <td style="width: 120px;">$${pTornilloLam.precio.toFixed(2)}</td>
                 </tr>
             `;
         }
@@ -327,7 +363,7 @@ function generarResultados() {
                            (cantRielCielo * pRielC.precio) + 
                            (cantParalCielo * pParalC.precio) + 
                            (cantOmega * pOmega.precio) + 
-                           subtotalCielo;
+                           subtotalTornillosCielo;
 
         htmlTabla = `
             <tr><td colspan="5" style="background-color: #e2e8f0; font-weight: bold; color: #1a4472;">CÁLCULO CIELO RASO DRYWALL</td></tr>
@@ -335,32 +371,38 @@ function generarResultados() {
                 <td><strong>Laminas</strong></td>
                 <td>3020001</td>
                 <td style="text-align: left;">${pLaminasC.descripcion}</td>
-                <td><strong>${cantLaminasCielo}</strong></td> <td style="width: 120px;">$${pLaminasC.precio.toFixed(2)}</td>
+                <td><strong>${cantLaminasCielo}</strong></td>
+                <td style="width: 120px;">$${pLaminasC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Riel</strong></td>
                 <td>3020100</td>
                 <td style="text-align: left;">${pRielC.descripcion}</td>
-                <td><strong>${cantRielCielo}</strong></td> <td style="width: 120px;">$${pRielC.precio.toFixed(2)}</td>
+                <td><strong>${cantRielCielo}</strong></td>
+                <td style="width: 120px;">$${pRielC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Paral</strong></td>
                 <td>3020101</td>
                 <td style="text-align: left;">${pParalC.descripcion}</td>
-                <td><strong>${cantParalCielo}</strong></td> <td style="width: 120px;">$${pParalC.precio.toFixed(2)}</td>
+                <td><strong>${cantParalCielo}</strong></td>
+                <td style="width: 120px;">$${pParalC.precio.toFixed(2)}</td>
             </tr>
             <tr>
                 <td><strong>Omega</strong></td>
                 <td>3020102</td>
                 <td style="text-align: left;">${pOmega.descripcion}</td>
-                <td><strong>${cantOmega}</strong></td> <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
+                <td><strong>${cantOmega}</strong></td>
+                <td style="width: 120px;">$${pOmega.precio.toFixed(2)}</td>
             </tr>
-            ${htmlTornillosCielo} <tr> <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td> <td><strong>$${totalCielo.toFixed(2)}</strong></td>
+            ${htmlTornillosCielo}
+            <tr>
+                <td colspan="4" style="text-align: right;"><strong>ESTIMADO TOTAL:</strong></td>
+                <td><strong>$${totalCielo.toFixed(2)}</strong></td>
             </tr>
         `;
     }
 
-    // Nota comercial agregada al final de la tabla
     htmlTabla += `
         <tr>
             <td colspan="5">
@@ -403,7 +445,7 @@ function verEsquemaVisual() {
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(startX, startY, rectWidth, rectHeight);
 
-   if (tipoActual === 'pared') {
+    if (tipoActual === 'pared') {
         tituloEsquema.innerText = 'Esquema: Pared con Drywall';
         const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 6;
 
@@ -457,7 +499,6 @@ function verEsquemaVisual() {
         `;
 
     } else {
-        // Cielo Raso Drywall
         tituloEsquema.innerText = 'Esquema: Cielo Raso Drywall';
         const cantParal = ultimosCalculos.cantParal > 0 ? ultimosCalculos.cantParal : 4;
         const cantOmega = ultimosCalculos.cantOmega > 0 ? ultimosCalculos.cantOmega : 8;
@@ -495,7 +536,28 @@ function verEsquemaVisual() {
     ctx.save();
     ctx.translate(startX - 28, startY + (rectHeight / 2));
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText(`Ancho/Alto: ${alto} m`, 0, 0); ctx.restore(); }  function volverResultados() { document.getElementById('seccion-esquema').classList.add('hidden'); document.getElementById('seccion-resultados').classList.remove('hidden'); }  function registrarUsoEnGoogleSheets(proyecto) { const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec"; const iframeId = 'hidden-sheet-iframe'; let iframe = document.getElementById(iframeId);  if (!iframe) { iframe = document.createElement('iframe'); iframe.id = iframeId; iframe.style.display = 'none'; document.body.appendChild(iframe); }  iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
+    ctx.fillText(`Ancho/Alto: ${alto} m`, 0, 0);
+    ctx.restore();
+}
+
+function volverResultados() {
+    document.getElementById('seccion-esquema').classList.add('hidden');
+    document.getElementById('seccion-resultados').classList.remove('hidden');
+}
+
+function registrarUsoEnGoogleSheets(proyecto) {
+    const urlScriptApp = "https://script.google.com/macros/s/AKfycbye2stKEpDnShv-dVjcJ6sBSf8qN7x4xqTgsm8PY_0lq9zbEv0KP_-445wbJpP5tXly/exec";
+    const iframeId = 'hidden-sheet-iframe';
+    let iframe = document.getElementById(iframeId);
+    
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = iframeId;
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    
+    iframe.src = `${urlScriptApp}?proyecto=${encodeURIComponent(proyecto)}&nocache=${new Date().getTime()}`;
 }
 
 function exportarEsquemaPDF() {
@@ -515,4 +577,47 @@ function exportarEsquemaPDF() {
         `;
     } else if (tipoActual === 'cielo_suspendido') {
         leyendaHTML = `
-            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Total: ${cantR
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Perfil Ángulo (Total: ${cantRielesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#64748b;"></span> Perfil Principal (Total: ${cantParalesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Perfil Secundario (Total: ${cantOmegaFinal} unidades)</div>
+        `;
+    } else {
+        leyendaHTML = `
+            <div class="leyenda-item"><span class="punto-color" style="background:#001a40;"></span> Riel (Marco) (Total: ${cantRielesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#d97706;"></span> Paral (Total: ${cantParalesFinal} unidades)</div>
+            <div class="leyenda-item"><span class="punto-color" style="background:#2563eb;"></span> Omega (Total: ${cantOmegaFinal} unidades)</div>
+        `;
+    }
+
+    const imagenDataURL = canvas.toDataURL('image/png');
+    const ventanaPDF = window.open('', '_blank');
+    
+    ventanaPDF.document.write(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>${titulo}</title>
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; color: #001a40; margin: 20px; }
+                h2 { margin-bottom: 5px; }
+                .subtitulo { font-size: 14px; color: #555; margin-bottom: 20px; }
+                img { max-width: 100%; height: auto; border: 1px solid #ccc; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+                .leyenda-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 15px; }
+                .leyenda-item { display: flex; align-items: center; font-size: 13px; font-weight: bold; }
+                .punto-color { width: 12px; height: 12px; display: inline-block; margin-right: 6px; border-radius: 2px; }
+                @media print { body { margin: 0; } button { display: none; } }
+            </style>
+        </head>
+        <body>
+            <h2>${titulo}</h2>
+            <div class="subtitulo">Presupuesto y Distribución Técnica de Materiales</div>
+            <div><img src="${imagenDataURL}" alt="Esquema Técnico Drywall"></div>
+            <div class="leyenda-container">${leyendaHTML}</div>
+            <script>window.onload = function() { window.print(); }</script>
+        </body>
+        </html>
+    `);
+    
+    ventanaPDF.document.close();
+}
