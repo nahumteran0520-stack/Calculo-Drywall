@@ -2,6 +2,7 @@
   "name": "Calculadora de Materiales EPA",
   "short_name": "Calc EPA",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#001a40",
   "theme_color": "#ffde21",
@@ -9,7 +10,14 @@
     {
       "src": "cielo.jpg",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "cielo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
     }
   ]
 }
